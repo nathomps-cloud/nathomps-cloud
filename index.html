@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galaxy S22+ Founder OS — Phase 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root {
+  --bg:#0c0c0e;
+  --bg1:#131316;
+  --bg2:#1a1a1f;
+  --bg3:#222228;
+  --border:rgba(255,255,255,0.06);
+  --border-hi:rgba(255,255,255,0.12);
+  --text:#eeeef0;
+  --text2:#9494a0;
+  --text3:#4a4a55;
+  --lime:#c8f04a;
+  --lime-dim:rgba(200,240,74,0.12);
+  --lime-border:rgba(200,240,74,0.25);
+  --teal:#4af0c8;
+  --teal-dim:rgba(74,240,200,0.1);
+  --teal-border:rgba(74,240,200,0.22);
+  --amber:#f0b84a;
+  --amber-dim:rgba(240,184,74,0.1);
+  --amber-border:rgba(240,184,74,0.22);
+  --violet:#a07af0;
+  --violet-dim:rgba(160,122,240,0.1);
+  --violet-border:rgba(160,122,240,0.22);
+  --red:#f04a6a;
+  --red-dim:rgba(240,74,106,0.1);
+  --red-border:rgba(240,74,106,0.22);
+  --font-head:'Syne',sans-serif;
+  --font-mono:'DM Mono',monospace;
+  --r:10px;
+  --r-lg:14px;
+}
+
+html{background:var(--bg);color:var(--text);font-family:var(--font-mono);-webkit-font-smoothing:antialiased;min-height:100vh}
+
+/* ── SHELL ── */
+.shell{max-width:800px;margin:0 auto;padding:52px 24px 100px}
+
+/* ── HEADER ── */
+.eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;font-family:var(--font-mono)}
+.title{font-family:var(--font-head);font-size:clamp(32px,7vw,52px);font-weight:800;line-height:.95;letter-spacing:-.03em;color:var(--text);margin-bottom:8px}
+.title em{color:var(--lime);font-style:normal}
+.sub{font-size:12px;color:var(--text3);letter-spacing:.05em;margin-bottom:6px}
+.phase-tag{display:inline-flex;align-items:center;gap:6px;margin-top:14px;margin-bottom:40px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--lime);background:var(--lime-dim);border:1px solid var(--lime-border);border-radius:6px;padding:5px 12px}
+.phase-tag::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--lime);flex-shrink:0}
+
+/* ── PROGRESS ── */
+.prog-wrap{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.prog-bar{flex:1;height:2px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;background:var(--lime);border-radius:2px;transition:width .4s cubic-bezier(.4,0,.2,1);width:0%}
+.prog-pct{font-size:10px;color:var(--text3);letter-spacing:.1em;white-space:nowrap;font-family:var(--font-mono)}
+
+/* ── NAV ── */
+.nav{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:28px;background:var(--bg1);border:1px solid var(--border);border-radius:var(--r-lg);padding:4px}
+.nb{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:7px 14px;border-radius:8px;border:none;background:transparent;color:var(--text3);cursor:pointer;transition:all .15s;white-space:nowrap}
+.nb:hover{color:var(--text2);background:var(--bg2)}
+.nb.on{background:var(--bg3);color:var(--text);border:1px solid var(--border-hi)}
+
+/* ── SECTIONS ── */
+.sec{display:none}.sec.vis{display:block;animation:up .2s ease}
+@keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── LABELS ── */
+.slabel{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:14px;font-family:var(--font-mono)}
+
+/* ── CARDS ── */
+.card{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px 20px;margin-bottom:10px;transition:border-color .15s}
+.card:hover{border-color:var(--border-hi)}
+.card-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.card-title{font-family:var(--font-head);font-size:14px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px}
+.card-icon{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.card-desc{font-size:11px;color:var(--text3);margin-bottom:12px;line-height:1.55}
+
+/* Badges */
+.badge{font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:3px 9px;border-radius:5px;font-weight:500}
+.b-teal{background:var(--teal-dim);color:var(--teal);border:1px solid var(--teal-border)}
+.b-lime{background:var(--lime-dim);color:var(--lime);border:1px solid var(--lime-border)}
+.b-amber{background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber-border)}
+.b-violet{background:var(--violet-dim);color:var(--violet);border:1px solid var(--violet-border)}
+.b-gray{background:var(--bg2);color:var(--text3);border:1px solid var(--border)}
+
+/* Pills */
+.pills{display:flex;flex-wrap:wrap;gap:5px}
+.pill{font-size:11px;padding:3px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-family:var(--font-mono);transition:all .12s}
+.pill:hover{border-color:var(--border-hi);color:var(--text)}
+
+/* ── GRID ── */
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:4px}
+.sc{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;transition:border-color .15s}
+.sc:hover{border-color:var(--border-hi)}
+.sc-head{font-family:var(--font-head);font-size:12px;font-weight:600;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.sc-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.sc-list{list-style:none;font-size:11px;color:var(--text2);line-height:1}
+.sc-list li{border-bottom:1px solid var(--border);padding:6px 0;display:flex;align-items:center;gap:6px;font-family:var(--font-mono)}
+.sc-list li:last-child{border-bottom:none}
+.sc-list li::before{content:'–';color:var(--text3);font-size:10px;flex-shrink:0}
+
+/* ── SETTINGS ROWS ── */
+.srow{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:12px;font-family:var(--font-mono)}
+.srow:last-child{border-bottom:none}
+.srow-left{color:var(--text2)}
+.srow-val{font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:3px 9px;border-radius:5px}
+.on-val{color:var(--lime);background:var(--lime-dim);border:1px solid var(--lime-border)}
+.off-val{color:var(--red);background:var(--red-dim);border:1px solid var(--red-border)}
+.num-val{color:var(--teal);background:var(--teal-dim);border:1px solid var(--teal-border)}
+
+/* ── QP GRID ── */
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(115px,1fr));gap:8px;margin-top:12px}
+.qi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;font-size:11px;color:var(--text2);display:flex;align-items:center;gap:8px;font-family:var(--font-mono);transition:all .12s}
+.qi:hover{border-color:var(--border-hi);color:var(--text)}
+.qi-dot{width:5px;height:5px;border-radius:50%;background:var(--teal);flex-shrink:0}
+
+/* ── FOCUS MODES ── */
+.mrow{display:flex;align-items:flex-start;gap:14px;padding:16px 0;border-bottom:1px solid var(--border)}
+.mrow:last-child{border-bottom:none}
+.mico{width:34px;height:34px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
+.mbody{flex:1}
+.mname{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+.mdesc{font-size:11px;color:var(--text2);line-height:1.6;margin-bottom:8px;font-family:var(--font-mono)}
+.mapps{display:flex;flex-wrap:wrap;gap:4px}
+.mapp{font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid var(--border);color:var(--text3);background:var(--bg2);font-family:var(--font-mono)}
+
+/* ── NOTE ── */
+.note{font-size:11px;color:var(--text3);line-height:1.7;border-left:2px solid var(--border-hi);padding-left:12px;font-family:var(--font-mono)}
+.note strong{color:var(--text2)}
+
+/* ── CHECKLIST ── */
+.cl-wrap{margin-top:24px;padding-top:20px;border-top:1px solid var(--border)}
+.cl-title{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;font-family:var(--font-mono)}
+.ci{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2);cursor:pointer;user-select:none;transition:color .12s;font-family:var(--font-mono)}
+.ci:last-child{border-bottom:none}
+.ci:hover{color:var(--text)}
+.ci.done{color:var(--text3);text-decoration:line-through}
+.cb{width:17px;height:17px;border:1px solid var(--border-hi);border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;color:transparent;transition:all .15s}
+.ci.done .cb{background:var(--lime-dim);border-color:var(--lime-border);color:var(--lime)}
+
+/* ── DIVIDER ── */
+hr{border:none;border-top:1px solid var(--border);margin:20px 0}
+
+/* ── CAPTURE GRID ── */
+.cap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+
+/* ── PHASE 2 BUTTON ── */
+.p2-btn{display:inline-flex;align-items:center;gap:8px;margin-top:24px;font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;padding:10px 20px;border-radius:8px;border:1px solid var(--lime-border);background:var(--lime-dim);color:var(--lime);cursor:pointer;transition:all .2s}
+.p2-btn:hover{background:rgba(200,240,74,0.18);border-color:rgba(200,240,74,0.4)}
+
+/* ── LOCK SCREEN PREVIEW ── */
+.lock-preview{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;margin-bottom:10px;text-align:center}
+.lock-time{font-family:var(--font-head);font-size:48px;font-weight:800;color:var(--text);letter-spacing:-.04em;line-height:1}
+.lock-date{font-size:11px;color:var(--text3);margin-top:4px;letter-spacing:.08em;font-family:var(--font-mono)}
+.lock-widgets{display:flex;justify-content:center;gap:10px;margin-top:16px;flex-wrap:wrap}
+.lock-widget{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:11px;color:var(--text2);display:flex;align-items:center;gap:6px;font-family:var(--font-mono)}
+
+@media(max-width:500px){
+  .shell{padding:32px 16px 80px}
+  .title{font-size:36px}
+  .nav{gap:3px}
+  .nb{font-size:9px;padding:6px 10px}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="eyebrow">Galaxy S22+ · One UI · Virginia</div>
+  <h1 class="title">Founder<br><em>OS</em></h1>
+  <div class="sub">Mobile command center for solo founders</div>
+  <div class="phase-tag">Phase 1 — Foundation Reset</div>
+
+  <div class="prog-wrap">
+    <div class="prog-bar"><div class="prog-fill" id="pf"></div></div>
+    <div class="prog-pct" id="pl">0 / 0 done</div>
+  </div>
+
+  <nav class="nav">
+    <button class="nb on" onclick="show('folders')">Folders</button>
+    <button class="nb" onclick="show('quickpanel')">Quick panel</button>
+    <button class="nb" onclick="show('install')">Install</button>
+    <button class="nb" onclick="show('settings')">Settings</button>
+    <button class="nb" onclick="show('goodlock')">Good Lock</button>
+    <button class="nb" onclick="show('focus')">Focus</button>
+    <button class="nb" onclick="show('lock')">Lock screen</button>
+    <button class="nb" onclick="show('capture')">Capture</button>
+  </nav>
+
+  <!-- ══ FOLDERS ══ -->
+  <div id="folders" class="sec vis">
+    <div class="slabel">Steps 1–2 — home screen philosophy + 4 core folders</div>
+    <div class="note" style="margin-bottom:16px"><strong>Rule:</strong> Your home screen communicates "I execute here." Social, games, shopping — allowed to exist on the device. Banned from the home screen.</div>
+
+    <div class="card">
+      <div class="card-row">
+        <div class="card-title"><div class="card-icon" style="background:var(--teal-dim)">⌘</div>Command</div>
+        <span class="badge b-teal">Folder 1</span>
+      </div>
+      <div class="card-desc">Finance, auth, scheduling. Your business nerve center.</div>
+      <div class="pills">
+        <span class="pill">Gmail</span><span class="pill">Calendar</span><span class="pill">Tasks</span><span class="pill">Notes</span><span class="pill">Stripe</span><span class="pill">PayPal</span><span class="pill">Banking</span><span class="pill">Authenticator</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-row">
+        <div class="card-title"><div class="card-icon" style="background:var(--lime-dim)">⚒</div>Build</div>
+        <span class="badge b-lime">Folder 2</span>
+      </div>
+      <div class="card-desc">Code, AI, design. Creation stack only.</div>
+      <div class="pills">
+        <span class="pill">GitHub</span><span class="pill">Vercel</span><span class="pill">Termius</span><span class="pill">Claude</span><span class="pill">ChatGPT</span><span class="pill">Gemini</span><span class="pill">Perplexity</span><span class="pill">Canva</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-row">
+        <div class="card-title"><div class="card-icon" style="background:var(--amber-dim)">📡</div>Publish</div>
+        <span class="badge b-amber">Folder 3</span>
+      </div>
+      <div class="card-desc">Content engine. Create, edit, distribute.</div>
+      <div class="pills">
+        <span class="pill">Substack</span><span class="pill">Beehiiv</span><span class="pill">X / Twitter</span><span class="pill">Instagram</span><span class="pill">CapCut</span><span class="pill">Lightroom</span><span class="pill">Camera</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-row">
+        <div class="card-title"><div class="card-icon" style="background:var(--violet-dim)">🏠</div>Life</div>
+        <span class="badge b-violet">Folder 4</span>
+      </div>
+      <div class="card-desc">Family, logistics, personal ops.</div>
+      <div class="pills">
+        <span class="pill">Messages</span><span class="pill">Phone</span><span class="pill">Maps</span><span class="pill">School apps</span><span class="pill">Grocery</span><span class="pill">Weather</span>
+      </div>
+    </div>
+
+    <div class="cl-wrap">
+      <div class="cl-title">Checklist</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Clear all existing home screen pages</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Create 4 folders: Command · Build · Publish · Life</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Populate each folder per lists above</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Move TikTok / Facebook / YouTube / games off home screen</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Set calm, minimal wallpaper</div>
+    </div>
+  </div>
+
+  <!-- ══ QUICK PANEL ══ -->
+  <div id="quickpanel" class="sec">
+    <div class="slabel">Step 3 — quick panel optimization</div>
+    <div class="note" style="margin-bottom:16px"><strong>Goal:</strong> One swipe = full operational control. Remove all clutter. Pin only what you actually reach for under pressure.</div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:12px">Pin these tiles — in this order</div>
+      <div class="qgrid">
+        <div class="qi"><div class="qi-dot"></div>Focus mode</div>
+        <div class="qi"><div class="qi-dot"></div>Extra Dim</div>
+        <div class="qi"><div class="qi-dot"></div>Eye Comfort</div>
+        <div class="qi"><div class="qi-dot"></div>Device Control</div>
+        <div class="qi"><div class="qi-dot"></div>Hotspot</div>
+        <div class="qi"><div class="qi-dot"></div>Smart View</div>
+        <div class="qi"><div class="qi-dot"></div>Nearby Share</div>
+        <div class="qi"><div class="qi-dot"></div>Screen Recorder</div>
+        <div class="qi"><div class="qi-dot"></div>DeX</div>
+        <div class="qi"><div class="qi-dot"></div>Dolby Atmos</div>
+        <div class="qi"><div class="qi-dot"></div>Battery Protect</div>
+      </div>
+    </div>
+
+    <div class="cl-wrap">
+      <div class="cl-title">Checklist</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Long-press quick panel → tap edit / pencil icon</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Remove all default clutter tiles</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Add and arrange the 11 tiles above in order</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Verify one-swipe access to Focus mode</div>
+    </div>
+  </div>
+
+  <!-- ══ INSTALL ══ -->
+  <div id="install" class="sec">
+    <div class="slabel">Step 4 — install list</div>
+
+    <div class="sgrid">
+      <div class="sc">
+        <div class="sc-head"><div class="sc-dot" style="background:var(--teal)"></div>Essential</div>
+        <ul class="sc-list">
+          <li>Good Lock</li><li>RegiStar</li><li>Home Up</li><li>One Hand Operation+</li><li>Sound Assistant</li><li>Routines+</li>
+        </ul>
+      </div>
+      <div class="sc">
+        <div class="sc-head"><div class="sc-dot" style="background:var(--lime)"></div>Workflow</div>
+        <ul class="sc-list">
+          <li>Termius</li><li>TickTick / Todoist</li><li>Obsidian</li><li>Google Keep</li><li>Canva</li><li>CapCut</li>
+        </ul>
+      </div>
+      <div class="sc">
+        <div class="sc-head"><div class="sc-dot" style="background:var(--violet)"></div>AI stack</div>
+        <ul class="sc-list">
+          <li>Claude</li><li>ChatGPT</li><li>Gemini</li><li>Perplexity</li>
+        </ul>
+      </div>
+      <div class="sc">
+        <div class="sc-head"><div class="sc-dot" style="background:var(--amber)"></div>Security</div>
+        <ul class="sc-list">
+          <li>Bitwarden</li><li>Authy / 2FAS</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cl-wrap">
+      <div class="cl-title">Checklist</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Install Good Lock from Galaxy Store</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Install modules: RegiStar, Home Up, One Hand Op+, Sound Assistant, Routines+</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Install Termius + Obsidian</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Install all 4 AI apps</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Install Bitwarden + 2FAS</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Install CapCut + TickTick</div>
+    </div>
+  </div>
+
+  <!-- ══ SETTINGS ══ -->
+  <div id="settings" class="sec">
+    <div class="slabel">Step 5 — One UI system settings</div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">🔋 Battery — Settings → Battery</div>
+      <div class="srow"><span class="srow-left">Protect Battery (caps charge at 80%)</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Adaptive battery</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Put unused apps to sleep</span><span class="srow-val on-val">On</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">📱 Display — Settings → Display</div>
+      <div class="srow"><span class="srow-left">Motion smoothness</span><span class="srow-val num-val">120Hz</span></div>
+      <div class="srow"><span class="srow-left">Dark mode</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Extra Dim shortcut</span><span class="srow-val on-val">On</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">⚙️ Advanced Features</div>
+      <div class="srow"><span class="srow-left">Labs → all multitasking features</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Swipe for split screen</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Swipe for pop-up view</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Double tap to lock</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Palm swipe screenshot</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Samsung Keyboard clipboard</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Text shortcuts</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Grammarly keyboard integration</span><span class="srow-val on-val">On</span></div>
+    </div>
+
+    <div class="cl-wrap">
+      <div class="cl-title">Checklist</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Battery — all 3 settings confirmed on</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Display — 120Hz + dark mode + Extra Dim shortcut</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Advanced features — all 8 settings on</div>
+    </div>
+  </div>
+
+  <!-- ══ GOOD LOCK ══ -->
+  <div id="goodlock" class="sec">
+    <div class="slabel">Step 6 — Good Lock module configuration</div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">🏠 Home Up</div>
+      <div class="srow"><span class="srow-left">Vertical app drawer</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Task changer layout</span><span class="srow-val num-val">Stack</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">👆 One Hand Operation+</div>
+      <div class="srow"><span class="srow-left">Swipe left edge inward</span><span class="srow-val num-val">Back</span></div>
+      <div class="srow"><span class="srow-left">Swipe right edge inward</span><span class="srow-val num-val">Recent apps</span></div>
+      <div class="srow"><span class="srow-left">Swipe up-left diagonal</span><span class="srow-val num-val">Split screen</span></div>
+      <div class="srow"><span class="srow-left">Swipe down-left diagonal</span><span class="srow-val num-val">Screenshot</span></div>
+      <div class="srow"><span class="srow-left">Long-press swipe</span><span class="srow-val num-val">Quick tools</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">👆 RegiStar — back tap</div>
+      <div class="srow"><span class="srow-left">Double tap back</span><span class="srow-val num-val">Screenshot</span></div>
+      <div class="srow"><span class="srow-left">Triple tap back</span><span class="srow-val num-val">Flashlight</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">🔊 Sound Assistant</div>
+      <div class="srow"><span class="srow-left">Individual app volumes</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Multi-app sound</span><span class="srow-val on-val">On</span></div>
+    </div>
+
+    <div class="cl-wrap">
+      <div class="cl-title">Checklist</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Home Up — vertical drawer + stack layout configured</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>One Hand Op+ — all 5 gestures assigned</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>RegiStar — double tap + triple tap assigned</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Sound Assistant — both settings on</div>
+    </div>
+  </div>
+
+  <!-- ══ FOCUS ══ -->
+  <div id="focus" class="sec">
+    <div class="slabel">Step 7 — focus modes · Digital Wellbeing → Focus mode → Add</div>
+
+    <div class="card">
+      <div class="mrow">
+        <div class="mico" style="background:var(--lime-dim)">🧠</div>
+        <div class="mbody">
+          <div class="mname">Deep Work</div>
+          <div class="mdesc">All social blocked. AI + code + notes only. Zero interruptions.</div>
+          <div class="mapps">
+            <span class="mapp">Claude</span><span class="mapp">ChatGPT</span><span class="mapp">GitHub</span><span class="mapp">Termius</span><span class="mapp">Notes</span><span class="mapp">Calendar</span><span class="mapp">Music</span>
+          </div>
+        </div>
+      </div>
+      <div class="mrow">
+        <div class="mico" style="background:var(--amber-dim)">📡</div>
+        <div class="mbody">
+          <div class="mname">Publishing</div>
+          <div class="mdesc">Optimized for content creation and distribution. Pure output mode.</div>
+          <div class="mapps">
+            <span class="mapp">Camera</span><span class="mapp">Canva</span><span class="mapp">CapCut</span><span class="mapp">Substack</span><span class="mapp">Beehiiv</span><span class="mapp">X / Twitter</span>
+          </div>
+        </div>
+      </div>
+      <div class="mrow">
+        <div class="mico" style="background:var(--violet-dim)">🌙</div>
+        <div class="mbody">
+          <div class="mname">Recovery</div>
+          <div class="mdesc">Minimal notifications. Warm screen. No work alerts. Calm only.</div>
+          <div class="mapps">
+            <span class="mapp">Eye Comfort on</span><span class="mapp">Extra Dim</span><span class="mapp">DND</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cl-wrap">
+      <div class="cl-title">Checklist</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Create "Deep Work" custom focus mode</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Create "Publishing" custom focus mode</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Create "Recovery" custom focus mode</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Confirm Focus mode tile is in quick panel</div>
+    </div>
+  </div>
+
+  <!-- ══ LOCK SCREEN ══ -->
+  <div id="lock" class="sec">
+    <div class="slabel">Step 8 — lock screen strategy</div>
+    <div class="note" style="margin-bottom:16px"><strong>Your nervous system sees this hundreds of times a day.</strong> It must signal: stability, clarity, control. Not chaos.</div>
+
+    <div class="lock-preview">
+      <div class="lock-time" id="ltime">00:00</div>
+      <div class="lock-date" id="ldate">Loading...</div>
+      <div class="lock-widgets">
+        <div class="lock-widget">📅 Calendar</div>
+        <div class="lock-widget">🌤 Weather</div>
+        <div class="lock-widget">🔋 Battery</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">Show on lock screen</div>
+      <div class="srow"><span class="srow-left">Calendar widget</span><span class="srow-val on-val">Yes</span></div>
+      <div class="srow"><span class="srow-left">Weather widget</span><span class="srow-val on-val">Yes</span></div>
+      <div class="srow"><span class="srow-left">Battery indicator</span><span class="srow-val on-val">Yes</span></div>
+      <div class="srow"><span class="srow-left">Essential reminders only</span><span class="srow-val on-val">Yes</span></div>
+      <div class="srow"><span class="srow-left">Social / news notifications</span><span class="srow-val off-val">Block</span></div>
+      <div class="srow"><span class="srow-left">Notification content preview</span><span class="srow-val off-val">Off</span></div>
+    </div>
+
+    <div class="cl-wrap">
+      <div class="cl-title">Checklist</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Set calm, minimal wallpaper</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Add calendar + weather widgets to lock screen</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Settings → Notifications → turn off lock screen previews</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Block social + news from appearing on lock screen</div>
+    </div>
+  </div>
+
+  <!-- ══ CAPTURE ══ -->
+  <div id="capture" class="sec">
+    <div class="slabel">Step 9 — capture system</div>
+    <div class="note" style="margin-bottom:16px"><strong>Core rule:</strong> No idea lives only in your head. Your brain is for thinking. Your systems are for storage. Capture everything. Sort nothing in the moment.</div>
+
+    <div class="cap-grid">
+      <div class="sc">
+        <div class="sc-head"><div class="sc-dot" style="background:var(--teal)"></div>Voice inbox</div>
+        <ul class="sc-list">
+          <li>One app only — Recorder or Whisper</li>
+          <li>Single gesture trigger via Good Lock</li>
+          <li>No editing on capture — just dump</li>
+          <li>Process weekly not daily</li>
+        </ul>
+      </div>
+      <div class="sc">
+        <div class="sc-head"><div class="sc-dot" style="background:var(--lime)"></div>Quick notes</div>
+        <ul class="sc-list">
+          <li>One inbox: Keep or Obsidian</li>
+          <li>No sorting at capture time</li>
+          <li>Dump first, organize weekly</li>
+          <li>Lock screen shortcut if possible</li>
+        </ul>
+      </div>
+      <div class="sc">
+        <div class="sc-head"><div class="sc-dot" style="background:var(--amber)"></div>Screenshots</div>
+        <ul class="sc-list">
+          <li>Double-tap back = instant capture</li>
+          <li>Weekly review cadence</li>
+          <li>Archive or act — nothing sits idle</li>
+          <li>Use Samsung Gallery auto-organize</li>
+        </ul>
+      </div>
+      <div class="sc">
+        <div class="sc-head"><div class="sc-dot" style="background:var(--violet)"></div>Bookmarks</div>
+        <ul class="sc-list">
+          <li>One destination: Raindrop or Pocket</li>
+          <li>No reading inside browser</li>
+          <li>Save now → read in batches later</li>
+          <li>Weekly clear-out session</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cl-wrap">
+      <div class="cl-title">Checklist</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Pick and commit to one voice memo app</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Pick and commit to one quick-note inbox</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Assign voice app to a Good Lock gesture shortcut</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Set double-tap back → screenshot in RegiStar</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Install Raindrop or Pocket</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Schedule weekly capture review (Sundays work)</div>
+    </div>
+
+    <button class="p2-btn" onclick="alert('Phase 2 coming next — AI workflows, automation, DeX, content pipelines, anti-overwhelm systems.')">
+      Start Phase 2 ↗
+    </button>
+  </div>
+
+</div>
+
+<script>
+const MAP={folders:0,quickpanel:1,install:2,settings:3,goodlock:4,focus:5,lock:6,capture:7};
+
+function show(id){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('vis'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById(id).classList.add('vis');
+  document.querySelectorAll('.nb')[MAP[id]].classList.add('on');
+  prog();
+}
+
+function tick(el){
+  el.classList.toggle('done');
+  el.querySelector('.cb').textContent=el.classList.contains('done')?'✓':'';
+  prog();
+}
+
+function prog(){
+  const all=document.querySelectorAll('.ci');
+  const done=document.querySelectorAll('.ci.done');
+  const pct=all.length?Math.round(done.length/all.length*100):0;
+  document.getElementById('pf').style.width=pct+'%';
+  document.getElementById('pl').textContent=done.length+' / '+all.length+' done';
+}
+
+// Live lock screen clock
+function clock(){
+  const now=new Date();
+  const h=String(now.getHours()).padStart(2,'0');
+  const m=String(now.getMinutes()).padStart(2,'0');
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const t=document.getElementById('ltime');
+  const d=document.getElementById('ldate');
+  if(t)t.textContent=h+':'+m;
+  if(d)d.textContent=days[now.getDay()]+', '+months[now.getMonth()]+' '+now.getDate();
+}
+clock();
+setInterval(clock,10000);
+prog();
+</script>
+</body>
+</html>
