@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galaxy S22+ Founder OS — Phase 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root {
+  --bg:#0c0c0e;
+  --bg1:#131316;
+  --bg2:#1a1a1f;
+  --bg3:#222228;
+  --border:rgba(255,255,255,0.06);
+  --border-hi:rgba(255,255,255,0.12);
+  --text:#eeeef0;
+  --text2:#9494a0;
+  --text3:#4a4a55;
+  --lime:#c8f04a;
+  --lime-dim:rgba(200,240,74,0.12);
+  --lime-border:rgba(200,240,74,0.25);
+  --teal:#4af0c8;
+  --teal-dim:rgba(74,240,200,0.1);
+  --teal-border:rgba(74,240,200,0.22);
+  --amber:#f0b84a;
+  --amber-dim:rgba(240,184,74,0.1);
+  --amber-border:rgba(240,184,74,0.22);
+  --violet:#a07af0;
+  --violet-dim:rgba(160,122,240,0.1);
+  --violet-border:rgba(160,122,240,0.22);
+  --coral:#f07a6a;
+  --coral-dim:rgba(240,122,106,0.1);
+  --coral-border:rgba(240,122,106,0.22);
+  --red:#f04a6a;
+  --red-dim:rgba(240,74,106,0.1);
+  --red-border:rgba(240,74,106,0.22);
+  --font-head:'Syne',sans-serif;
+  --font-mono:'DM Mono',monospace;
+  --r:10px;
+  --r-lg:14px;
+}
+
+html{background:var(--bg);color:var(--text);font-family:var(--font-mono);-webkit-font-smoothing:antialiased;min-height:100vh}
+
+.shell{max-width:800px;margin:0 auto;padding:52px 24px 100px}
+
+/* ── HEADER ── */
+.eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;font-family:var(--font-mono)}
+.title{font-family:var(--font-head);font-size:clamp(32px,7vw,52px);font-weight:800;line-height:.95;letter-spacing:-.03em;color:var(--text);margin-bottom:8px}
+.title em{color:var(--lime);font-style:normal}
+.sub{font-size:12px;color:var(--text3);letter-spacing:.05em;margin-bottom:6px}
+.phase-tag{display:inline-flex;align-items:center;gap:6px;margin-top:14px;margin-bottom:40px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--lime);background:var(--lime-dim);border:1px solid var(--lime-border);border-radius:6px;padding:5px 12px}
+.phase-tag::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--lime);flex-shrink:0}
+
+/* ── PROGRESS ── */
+.prog-wrap{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.prog-bar{flex:1;height:2px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;background:var(--lime);border-radius:2px;transition:width .4s cubic-bezier(.4,0,.2,1);width:0%}
+.prog-pct{font-size:10px;color:var(--text3);letter-spacing:.1em;white-space:nowrap;font-family:var(--font-mono)}
+
+/* ── NAV ── */
+.nav{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:28px;background:var(--bg1);border:1px solid var(--border);border-radius:var(--r-lg);padding:4px}
+.nb{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:7px 14px;border-radius:8px;border:none;background:transparent;color:var(--text3);cursor:pointer;transition:all .15s;white-space:nowrap}
+.nb:hover{color:var(--text2);background:var(--bg2)}
+.nb.on{background:var(--bg3);color:var(--text);border:1px solid var(--border-hi)}
+
+/* ── SECTIONS ── */
+.sec{display:none}.sec.vis{display:block;animation:up .2s ease}
+@keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── LABELS ── */
+.slabel{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:14px;font-family:var(--font-mono)}
+
+/* ── CARDS ── */
+.card{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px 20px;margin-bottom:10px;transition:border-color .15s}
+.card:hover{border-color:var(--border-hi)}
+.card-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.card-title{font-family:var(--font-head);font-size:14px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px}
+.card-icon{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.card-desc{font-size:11px;color:var(--text3);margin-bottom:12px;line-height:1.55}
+
+/* ── BADGES ── */
+.badge{font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:3px 9px;border-radius:5px;font-weight:500}
+.b-teal{background:var(--teal-dim);color:var(--teal);border:1px solid var(--teal-border)}
+.b-lime{background:var(--lime-dim);color:var(--lime);border:1px solid var(--lime-border)}
+.b-amber{background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber-border)}
+.b-violet{background:var(--violet-dim);color:var(--violet);border:1px solid var(--violet-border)}
+.b-coral{background:var(--coral-dim);color:var(--coral);border:1px solid var(--coral-border)}
+.b-gray{background:var(--bg2);color:var(--text3);border:1px solid var(--border)}
+
+/* ── PILLS ── */
+.pills{display:flex;flex-wrap:wrap;gap:5px}
+.pill{font-size:11px;padding:3px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-family:var(--font-mono);transition:all .12s}
+.pill:hover{border-color:var(--border-hi);color:var(--text)}
+
+/* ── GRID ── */
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:10px}
+.sc{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;transition:border-color .15s}
+.sc:hover{border-color:var(--border-hi)}
+.sc-head{font-family:var(--font-head);font-size:12px;font-weight:600;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.sc-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.sc-list{list-style:none;font-size:11px;color:var(--text2);line-height:1}
+.sc-list li{border-bottom:1px solid var(--border);padding:6px 0;display:flex;align-items:center;gap:6px;font-family:var(--font-mono)}
+.sc-list li:last-child{border-bottom:none}
+.sc-list li::before{content:'–';color:var(--text3);font-size:10px;flex-shrink:0}
+
+/* ── SETTINGS ROWS ── */
+.srow{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:12px;font-family:var(--font-mono)}
+.srow:last-child{border-bottom:none}
+.srow-left{color:var(--text2);flex:1;padding-right:12px}
+.srow-val{font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:3px 9px;border-radius:5px;white-space:nowrap}
+.on-val{color:var(--lime);background:var(--lime-dim);border:1px solid var(--lime-border)}
+.off-val{color:var(--red);background:var(--red-dim);border:1px solid var(--red-border)}
+.num-val{color:var(--teal);background:var(--teal-dim);border:1px solid var(--teal-border)}
+.amber-val{color:var(--amber);background:var(--amber-dim);border:1px solid var(--amber-border)}
+.violet-val{color:var(--violet);background:var(--violet-dim);border:1px solid var(--violet-border)}
+
+/* ── WORKFLOW STEPS ── */
+.steps{list-style:none;counter-reset:step}
+.step{counter-increment:step;display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)}
+.step:last-child{border-bottom:none}
+.step-num{width:26px;height:26px;border-radius:8px;background:var(--bg3);border:1px solid var(--border-hi);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--text3);flex-shrink:0;font-family:var(--font-mono)}
+.step-body{flex:1}
+.step-title{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+.step-desc{font-size:11px;color:var(--text2);line-height:1.6;font-family:var(--font-mono)}
+.step-tool{display:inline-flex;align-items:center;gap:5px;margin-top:6px;font-size:10px;padding:2px 9px;border-radius:5px;background:var(--bg2);border:1px solid var(--border);color:var(--text3);font-family:var(--font-mono)}
+
+/* ── PIPELINE ── */
+.pipeline{display:flex;align-items:stretch;gap:0;margin:16px 0;overflow-x:auto;padding-bottom:4px}
+.pipe-node{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;min-width:110px;flex-shrink:0;transition:border-color .15s}
+.pipe-node:hover{border-color:var(--border-hi)}
+.pipe-label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:5px;font-family:var(--font-mono)}
+.pipe-name{font-family:var(--font-head);font-size:12px;font-weight:700;color:var(--text)}
+.pipe-arrow{display:flex;align-items:center;padding:0 6px;color:var(--text3);font-size:14px;flex-shrink:0}
+
+/* ── NOTE ── */
+.note{font-size:11px;color:var(--text3);line-height:1.7;border-left:2px solid var(--border-hi);padding-left:12px;font-family:var(--font-mono);margin-bottom:16px}
+.note strong{color:var(--text2)}
+
+/* ── CHECKLIST ── */
+.cl-wrap{margin-top:24px;padding-top:20px;border-top:1px solid var(--border)}
+.cl-title{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;font-family:var(--font-mono)}
+.ci{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2);cursor:pointer;user-select:none;transition:color .12s;font-family:var(--font-mono)}
+.ci:last-child{border-bottom:none}
+.ci:hover{color:var(--text)}
+.ci.done{color:var(--text3);text-decoration:line-through}
+.cb{width:17px;height:17px;border:1px solid var(--border-hi);border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;color:transparent;transition:all .15s}
+.ci.done .cb{background:var(--lime-dim);border-color:var(--lime-border);color:var(--lime)}
+
+/* ── DEX TABLE ── */
+.dex-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.dex-cell{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px}
+.dex-cell-label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;font-family:var(--font-mono)}
+.dex-cell-val{font-size:12px;color:var(--text2);font-family:var(--font-mono)}
+
+/* ── ROUTINE TIMELINE ── */
+.timeline{list-style:none}
+.tl-item{display:flex;align-items:flex-start;gap:14px;padding:12px 0;border-bottom:1px solid var(--border)}
+.tl-item:last-child{border-bottom:none}
+.tl-time{font-size:10px;color:var(--text3);font-family:var(--font-mono);min-width:48px;padding-top:2px;letter-spacing:.06em}
+.tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.tl-body{flex:1}
+.tl-name{font-family:var(--font-head);font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+.tl-desc{font-size:11px;color:var(--text3);line-height:1.5;font-family:var(--font-mono)}
+
+hr{border:none;border-top:1px solid var(--border);margin:20px 0}
+
+@media(max-width:500px){
+  .shell{padding:32px 16px 80px}
+  .title{font-size:36px}
+  .nav{gap:3px}
+  .nb{font-size:9px;padding:6px 10px}
+  .dex-row{grid-template-columns:1fr}
+  .pipeline{flex-direction:column}
+  .pipe-arrow{transform:rotate(90deg)}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="eyebrow">Galaxy S22+ · One UI · Virginia</div>
+  <h1 class="title">Founder<br><em>OS</em></h1>
+  <div class="sub">Mobile command center for solo founders</div>
+  <div class="phase-tag">Phase 2 — AI, Automation &amp; Output</div>
+
+  <div class="prog-wrap">
+    <div class="prog-bar"><div class="prog-fill" id="pf"></div></div>
+    <div class="prog-pct" id="pl">0 / 0 done</div>
+  </div>
+
+  <nav class="nav">
+    <button class="nb on" onclick="show('ai')">AI Stack</button>
+    <button class="nb" onclick="show('workflows')">Workflows</button>
+    <button class="nb" onclick="show('automation')">Automation</button>
+    <button class="nb" onclick="show('dex')">DeX</button>
+    <button class="nb" onclick="show('content')">Content</button>
+    <button class="nb" onclick="show('overwhelm')">Anti-Overwhelm</button>
+    <button class="nb" onclick="show('routine')">Daily OS</button>
+  </nav>
+
+  <!-- ══ AI STACK ══ -->
+  <div id="ai" class="sec vis">
+    <div class="slabel">Step 10 — configure your AI stack</div>
+    <div class="note"><strong>Rule:</strong> Every AI app has one job. Don't use Claude when you need Perplexity. Don't use ChatGPT when you need Gemini. Assignment clarity = speed.</div>
+
+    <div class="card">
+      <div class="card-row">
+        <div class="card-title"><div class="card-icon" style="background:var(--violet-dim)">🤖</div>Claude</div>
+        <span class="badge b-violet">Primary</span>
+      </div>
+      <div class="card-desc">Long-form writing, code, complex reasoning, document analysis, strategic thinking. Your main work brain.</div>
+      <div class="srow"><span class="srow-left">Default use</span><span class="srow-val amber-val">Writing + Code</span></div>
+      <div class="srow"><span class="srow-left">Projects feature</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Set up a "Founder" project with your context</span><span class="srow-val on-val">Do this</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-row">
+        <div class="card-title"><div class="card-icon" style="background:var(--teal-dim)">🔍</div>Perplexity</div>
+        <span class="badge b-teal">Research</span>
+      </div>
+      <div class="card-desc">Real-time web research, fact-checking, sourced answers. Replace Google for everything non-trivial.</div>
+      <div class="srow"><span class="srow-left">Default use</span><span class="srow-val amber-val">Research + Facts</span></div>
+      <div class="srow"><span class="srow-left">Pro subscription</span><span class="srow-val amber-val">Recommended</span></div>
+      <div class="srow"><span class="srow-left">Collections feature for saved research</span><span class="srow-val on-val">Use it</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-row">
+        <div class="card-title"><div class="card-icon" style="background:var(--lime-dim)">✨</div>Gemini</div>
+        <span class="badge b-lime">Google integration</span>
+      </div>
+      <div class="card-desc">Gmail drafts, Google Docs summaries, Calendar parsing, Drive search. Best for Google Workspace tasks.</div>
+      <div class="srow"><span class="srow-left">Default use</span><span class="srow-val amber-val">Gmail + Docs</span></div>
+      <div class="srow"><span class="srow-left">Connect Google Workspace</span><span class="srow-val on-val">Do this</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-row">
+        <div class="card-title"><div class="card-icon" style="background:var(--amber-dim)">💬</div>ChatGPT</div>
+        <span class="badge b-amber">Ideation</span>
+      </div>
+      <div class="card-desc">Brainstorming, rapid ideas, image generation (DALL-E), voice mode for hands-free thinking out loud.</div>
+      <div class="srow"><span class="srow-left">Default use</span><span class="srow-val amber-val">Ideas + Images</span></div>
+      <div class="srow"><span class="srow-left">Voice mode shortcut</span><span class="srow-val on-val">Set up</span></div>
+    </div>
+
+    <div class="cl-wrap">
+      <div class="cl-title">Checklist</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Set up Claude Project: "Founder" with your bio, projects, writing style</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Connect Gemini to Google Workspace (Gmail + Drive)</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Set Perplexity as default search in Samsung Browser</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Enable ChatGPT voice mode — assign to a Good Lock gesture</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Put all 4 AI apps in the Build folder (Phase 1 setup)</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Save your top 5 prompts to /AI/prompts in Google Drive</div>
+    </div>
+  </div>
+
+  <!-- ══ WORKFLOWS ══ -->
+  <div id="workflows" class="sec">
+    <div class="slabel">Step 11 — AI-powered daily workflows</div>
+    <div class="note"><strong>These are the 3 workflows that compress hours into minutes.</strong> Build them once. Run them on repeat.</div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:16px">📧 Morning Email Triage — 10 min max</div>
+      <ul class="steps">
+        <li class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <div class="step-title">Open Gmail — scan subject lines only</div>
+            <div class="step-desc">Do not open any emails yet. Look for anything that requires same-day action.</div>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <div class="step-title">Flag urgent items with a star</div>
+            <div class="step-desc">Urgent = needs a decision or response within 24 hours. Everything else waits.</div>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <div class="step-title">Use Gemini to draft replies</div>
+            <div class="step-desc">Open email → tap Gemini icon → "Draft a brief professional reply confirming X." Edit in 30 seconds.</div>
+            <span class="step-tool">✨ Gemini</span>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-num">04</div>
+          <div class="step-body">
+            <div class="step-title">Archive everything else</div>
+            <div class="step-desc">Inbox zero is the target. If it's not starred, it goes to archive. Not trash — archive.</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:16px">📰 Research → Publish Workflow</div>
+      <div class="pipeline">
+        <div class="pipe-node">
+          <div class="pipe-label">Capture</div>
+          <div class="pipe-name">Perplexity</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node">
+          <div class="pipe-label">Draft</div>
+          <div class="pipe-name">Claude</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node">
+          <div class="pipe-label">Edit</div>
+          <div class="pipe-name">Grammarly</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node">
+          <div class="pipe-label">Design</div>
+          <div class="pipe-name">Canva</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node">
+          <div class="pipe-label">Publish</div>
+          <div class="pipe-name">Beehiiv</div>
+        </div>
+      </div>
+      <ul class="steps">
+        <li class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <div class="step-title">Research in Perplexity</div>
+            <div class="step-desc">Ask the core question. Get sourced answers. Copy the key facts into Google Keep.</div>
+            <span class="step-tool">🔍 Perplexity</span>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <div class="step-title">Draft in Claude</div>
+            <div class="step-desc">Paste your notes. Prompt: "Write a newsletter section in my voice. Punchy, no fluff, founder audience." Edit the output.</div>
+            <span class="step-tool">🤖 Claude</span>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <div class="step-title">Polish with Grammarly</div>
+            <div class="step-desc">Run the draft through Grammarly keyboard. Accept clarity edits. Reject tone changes.</div>
+            <span class="step-tool">✍️ Grammarly</span>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-num">04</div>
+          <div class="step-body">
+            <div class="step-title">Design header in Canva</div>
+            <div class="step-desc">Open your newsletter template. Swap the headline text. Export. Done in 3 minutes.</div>
+            <span class="step-tool">🎨 Canva</span>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-num">05</div>
+          <div class="step-body">
+            <div class="step-title">Publish to Beehiiv</div>
+            <div class="step-desc">Paste draft + upload header. Set send time. Schedule. Close the app.</div>
+            <span class="step-tool">📧 Beehiiv</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:16px">♻️ Repurpose One Piece → 5 Formats</div>
+      <ul class="steps">
+        <li class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <div class="step-title">Start with your newsletter issue</div>
+            <div class="step-desc">The newsletter is your content mothership. Everything else derives from it.</div>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <div class="step-title">Claude → X thread (5–7 tweets)</div>
+            <div class="step-desc">Prompt: "Turn this newsletter into a punchy X thread. Hook, value, CTA. No emojis."</div>
+            <span class="step-tool">🤖 Claude</span>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <div class="step-title">Claude → LinkedIn post</div>
+            <div class="step-desc">Prompt: "Rewrite as a LinkedIn post. Professional founder voice. 200 words max."</div>
+            <span class="step-tool">🤖 Claude</span>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-num">04</div>
+          <div class="step-body">
+            <div class="step-title">Canva → quote graphic</div>
+            <div class="step-desc">Pull the strongest line from your piece. Drop it on your brand template. Export vertical.</div>
+            <span class="step-tool">🎨 Canva</span>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-num">05</div>
+          <div class="step-body">
+            <div class="step-title">CapCut → 60-second video</div>
+            <div class="step-desc">Record yourself reading the key insight. CapCut auto-caption. Add b-roll or slides. Done.</div>
+            <span class="step-tool">🎬 CapCut</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="cl-wrap">
+      <div class="cl-title">Checklist</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Run Morning Email Triage for 3 days straight to build the habit</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Complete Research → Publish workflow for your next newsletter issue</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Repurpose one existing piece into 3 formats using Claude</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Save your repurposing prompts to /AI/prompts/newsletter</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Save your newsletter template to /AI/templates</div>
+    </div>
+  </div>
+
+  <!-- ══ AUTOMATION ══ -->
+  <div id="automation" class="sec">
+    <div class="slabel">Step 12 — Samsung Routines+ automations</div>
+    <div class="note"><strong>Automation goal:</strong> Your phone should configure itself for your context. You shouldn't have to think about settings — the device should read the situation.</div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">⏰ Morning Routine — 6:00 AM</div>
+      <div class="srow"><span class="srow-left">Trigger</span><span class="srow-val num-val">6:00 AM daily</span></div>
+      <div class="srow"><span class="srow-left">Turn off DND</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Disable Eye Comfort Shield</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Set brightness to 60%</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Open Google Tasks</span><span class="srow-val on-val">On</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">🧠 Deep Work — triggered by Focus mode</div>
+      <div class="srow"><span class="srow-left">Trigger</span><span class="srow-val num-val">Deep Work focus on</span></div>
+      <div class="srow"><span class="srow-left">Enable DND (contacts only)</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Set volume to 0</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Disable Wi-Fi notifications</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Enable Dolby Atmos (music)</span><span class="srow-val on-val">On</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">🌙 Wind Down — 9:30 PM</div>
+      <div class="srow"><span class="srow-left">Trigger</span><span class="srow-val num-val">9:30 PM daily</span></div>
+      <div class="srow"><span class="srow-left">Enable Eye Comfort Shield</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Enable Extra Dim</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Switch to Recovery focus mode</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Set brightness to 20%</span><span class="srow-val on-val">On</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">🚗 Driving — Bluetooth connects to car</div>
+      <div class="srow"><span class="srow-left">Trigger</span><span class="srow-val num-val">Bluetooth car connect</span></div>
+      <div class="srow"><span class="srow-left">Enable DND while driving</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Launch Google Maps</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Enable Driving mode</span><span class="srow-val on-val">On</span></div>
+    </div>
+
+    <div class="cl-wrap">
+      <div class="cl-title">Checklist</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Open Routines+ in Good Lock</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Build Morning Routine — trigger 6:00 AM</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Build Deep Work automation — trigger Focus mode</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Build Wind Down routine — trigger 9:30 PM</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Build Driving routine — trigger Bluetooth car</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Test each routine by triggering it manually once</div>
+    </div>
+  </div>
+
+  <!-- ══ DEX ══ -->
+  <div id="dex" class="sec">
+    <div class="slabel">Step 13 — Samsung DeX setup</div>
+    <div class="note"><strong>DeX turns your S22+ into a desktop.</strong> When you connect to a monitor, keyboard, and mouse — your phone becomes your laptop. One device. Two modes.</div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">🖥️ Hardware you need</div>
+      <div class="srow"><span class="srow-left">USB-C to HDMI adapter (or DeX pad)</span><span class="srow-val amber-val">Required</span></div>
+      <div class="srow"><span class="srow-left">External monitor (any HDMI display)</span><span class="srow-val amber-val">Required</span></div>
+      <div class="srow"><span class="srow-left">Bluetooth keyboard</span><span class="srow-val amber-val">Required</span></div>
+      <div class="srow"><span class="srow-left">Bluetooth mouse</span><span class="srow-val amber-val">Recommended</span></div>
+      <div class="srow"><span class="srow-left">USB-C hub (extra ports)</span><span class="srow-val b-gray">Optional</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">⚙️ DeX settings to configure</div>
+      <div class="srow"><span class="srow-left">Settings → Connected devices → DeX</span><span class="srow-val on-val">Enable</span></div>
+      <div class="srow"><span class="srow-left">Auto start when HDMI connected</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Continue using phone while in DeX</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">DeX tile in quick panel</span><span class="srow-val on-val">Pinned</span></div>
+      <div class="srow"><span class="srow-left">Show taskbar</span><span class="srow-val on-val">On</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">🧠 DeX power use cases</div>
+      <div class="dex-row">
+        <div class="dex-cell">
+          <div class="dex-cell-label">Code</div>
+          <div class="dex-cell-val">Termius SSH session on big screen. Full keyboard. Real terminal.</div>
+        </div>
+        <div class="dex-cell">
+          <div class="dex-cell-label">Write</div>
+          <div class="dex-cell-val">Google Docs in DeX browser. Feels like a laptop. Actually is one.</div>
+        </div>
+      </div>
+      <div class="dex-row">
+        <div class="dex-cell">
+          <div class="dex-cell-label">Edit video</div>
+          <div class="dex-cell-val">CapCut in DeX mode. Bigger timeline. Easier cuts. Same export.</div>
+        </div>
+        <div class="dex-cell">
+          <div class="dex-cell-label">Finance</div>
+          <div class="dex-cell-val">Stripe + banking on large display. Multi-window alongside Gmail.</div>
+        </div>
+      </div>
+      <div class="dex-row">
+        <div class="dex-cell">
+          <div class="dex-cell-label">Design</div>
+          <div class="dex-cell-val">Canva desktop-class experience. Drag, drop, resize with mouse.</div>
+        </div>
+        <div class="dex-cell">
+          <div class="dex-cell-label">AI</div>
+          <div class="dex-cell-val">Claude + browser side by side. Research and write simultaneously.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cl-wrap">
+      <div class="cl-title">Checklist</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Get USB-C to HDMI adapter</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Enable DeX in Settings → Connected devices</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Pin DeX tile to quick panel</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Test DeX with monitor + keyboard for 30 minutes</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Do one real work session (write or code) entirely in DeX</div>
+    </div>
+  </div>
+
+  <!-- ══ CONTENT ══ -->
+  <div id="content" class="sec">
+    <div class="slabel">Step 14 — mobile content production pipeline</div>
+    <div class="note"><strong>Your phone is a broadcast studio.</strong> Every tool in this stack was chosen because it works fast, on mobile, without a laptop.</div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">📸 Photo workflow — field to published</div>
+      <ul class="steps">
+        <li class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <div class="step-title">Shoot in Pro mode</div>
+            <div class="step-desc">Camera → Pro mode. Shoot RAW + JPEG. Control exposure manually for scenes with mixed light.</div>
+            <span class="step-tool">📷 Camera</span>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <div class="step-title">Edit in Lightroom Mobile</div>
+            <div class="step-desc">Apply your preset. Adjust exposure + shadows. Export at full resolution. Takes 90 seconds per photo.</div>
+            <span class="step-tool">🎞️ Lightroom</span>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <div class="step-title">File to Google Drive</div>
+            <div class="step-desc">Save to /CONTENT/screenshots or /PROJECTS/[project]/assets. Name it. Do not leave it in Gallery.</div>
+            <span class="step-tool">☁️ Drive</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">🎬 Video workflow — capture to post</div>
+      <ul class="steps">
+        <li class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <div class="step-title">Record in 4K 30fps</div>
+            <div class="step-desc">Settings → Camera → Video size → 4K 30fps. Stabilization on. Film horizontally for most content.</div>
+            <span class="step-tool">📷 Camera</span>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <div class="step-title">Edit in CapCut</div>
+            <div class="step-desc">Import. Auto-caption (95% accurate). Trim. Add text overlays. Export 1080p. Under 10 minutes.</div>
+            <span class="step-tool">🎬 CapCut</span>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <div class="step-title">Write caption in Claude</div>
+            <div class="step-desc">Prompt: "Write a 3-sentence caption for this video about [topic]. Casual, direct, founder voice."</div>
+            <span class="step-tool">🤖 Claude</span>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-num">04</div>
+          <div class="step-body">
+            <div class="step-title">Post direct from CapCut</div>
+            <div class="step-desc">CapCut → Share → Instagram Reels / TikTok / X. Paste caption. Schedule or post live.</div>
+            <span class="step-tool">📤 CapCut</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">📱 Camera settings for content work</div>
+      <div class="srow"><span class="srow-left">Shooting modes: Expert RAW</span><span class="srow-val on-val">Install</span></div>
+      <div class="srow"><span class="srow-left">Shot suggestions</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Scan QR codes</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Video stabilization</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Grid lines</span><span class="srow-val on-val">On</span></div>
+      <div class="srow"><span class="srow-left">Tracking AF</span><span class="srow-val on-val">On</span></div>
+    </div>
+
+    <div class="cl-wrap">
+      <div class="cl-title">Checklist</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Install Lightroom Mobile + set up your editing preset</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Set camera to 4K 30fps + stabilization on</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Do one full photo workflow: shoot → edit → file</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Do one full video workflow: record → edit in CapCut → post</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Build one Canva template for your newsletter header</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Save all content templates to /CONTENT/newsletter assets</div>
+    </div>
+  </div>
+
+  <!-- ══ ANTI-OVERWHELM ══ -->
+  <div id="overwhelm" class="sec">
+    <div class="slabel">Step 15 — anti-overwhelm systems</div>
+    <div class="note"><strong>Overwhelm is not a feelings problem. It's a systems problem.</strong> These protocols turn the phone from a source of anxiety into a controlled instrument.</div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">🔕 Notification architecture</div>
+      <div class="srow"><span class="srow-left">Allow notifications: Phone, Messages, Calendar, Gmail (starred only)</span><span class="srow-val on-val">Allow</span></div>
+      <div class="srow"><span class="srow-left">Block notifications: all social apps</span><span class="srow-val off-val">Block</span></div>
+      <div class="srow"><span class="srow-left">Block notifications: news apps</span><span class="srow-val off-val">Block</span></div>
+      <div class="srow"><span class="srow-left">Block notifications: games, shopping, entertainment</span><span class="srow-val off-val">Block</span></div>
+      <div class="srow"><span class="srow-left">Notification sounds: 3 apps max</span><span class="srow-val amber-val">Phone + Messages + Calendar</span></div>
+      <div class="srow"><span class="srow-left">Badge icons only (no banners) for email</span><span class="srow-val on-val">Set</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">⏱️ App time limits — Digital Wellbeing</div>
+      <div class="srow"><span class="srow-left">Instagram</span><span class="srow-val num-val">20 min / day</span></div>
+      <div class="srow"><span class="srow-left">X / Twitter</span><span class="srow-val num-val">30 min / day</span></div>
+      <div class="srow"><span class="srow-left">YouTube</span><span class="srow-val num-val">45 min / day</span></div>
+      <div class="srow"><span class="srow-left">TikTok</span><span class="srow-val num-val">15 min / day</span></div>
+      <div class="srow"><span class="srow-left">News apps</span><span class="srow-val num-val">15 min / day</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">🧱 Phone-free zones</div>
+      <div class="srow"><span class="srow-left">First 30 min after waking</span><span class="srow-val off-val">No phone</span></div>
+      <div class="srow"><span class="srow-left">All meals</span><span class="srow-val off-val">No phone</span></div>
+      <div class="srow"><span class="srow-left">Last 30 min before bed</span><span class="srow-val off-val">No phone</span></div>
+      <div class="srow"><span class="srow-left">During focused work blocks</span><span class="srow-val off-val">No phone (use DeX or laptop)</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">📋 Weekly review — every Sunday</div>
+      <ul class="steps">
+        <li class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <div class="step-title">Clear /INBOX in Google Drive</div>
+            <div class="step-desc">File everything. Nothing left over. 5 minutes max.</div>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <div class="step-title">Review Digital Wellbeing stats</div>
+            <div class="step-desc">Check screen time. Adjust app limits if needed. Be honest about what patterns you see.</div>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <div class="step-title">Process all screenshots</div>
+            <div class="step-desc">Delete junk. File useful ones. Turn action items into tasks in TickTick.</div>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-num">04</div>
+          <div class="step-body">
+            <div class="step-title">Set 3 priorities for the week</div>
+            <div class="step-desc">3 things. If all 3 get done, the week was a success. Write them in Google Tasks.</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="cl-wrap">
+      <div class="cl-title">Checklist</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Settings → Notifications → audit every app — block all non-essential</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Digital Wellbeing → set time limits on all social + entertainment apps</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Disable notification sounds for all apps except Phone, Messages, Calendar</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Set a Sunday recurring alarm: "Weekly review"</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Do your first weekly review this Sunday using the 4-step process above</div>
+    </div>
+  </div>
+
+  <!-- ══ DAILY OS ══ -->
+  <div id="routine" class="sec">
+    <div class="slabel">Step 16 — the daily operating system</div>
+    <div class="note"><strong>This is the full day on one page.</strong> Not a perfect schedule — a decision framework. Know what mode you're in. Know which tool to reach for. Know when to stop.</div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">🌅 Morning block — 6:00–9:00 AM</div>
+      <ul class="timeline">
+        <li class="tl-item">
+          <div class="tl-time">6:00</div>
+          <div class="tl-dot" style="background:var(--lime)"></div>
+          <div class="tl-body">
+            <div class="tl-name">Morning routine fires</div>
+            <div class="tl-desc">Routines+ automation activates. DND off. Tasks app opens. Phone is ready.</div>
+          </div>
+        </li>
+        <li class="tl-item">
+          <div class="tl-time">6:00–6:30</div>
+          <div class="tl-dot" style="background:var(--text3)"></div>
+          <div class="tl-body">
+            <div class="tl-name">No phone</div>
+            <div class="tl-desc">Physical morning. Water. Movement. Mental space before the day loads in.</div>
+          </div>
+        </li>
+        <li class="tl-item">
+          <div class="tl-time">6:30</div>
+          <div class="tl-dot" style="background:var(--teal)"></div>
+          <div class="tl-body">
+            <div class="tl-name">Email triage — 10 min</div>
+            <div class="tl-desc">Star urgent. Archive the rest. Use Gemini to draft any immediate replies.</div>
+          </div>
+        </li>
+        <li class="tl-item">
+          <div class="tl-time">6:45</div>
+          <div class="tl-dot" style="background:var(--violet)"></div>
+          <div class="tl-body">
+            <div class="tl-name">Set 3 priorities in Google Tasks</div>
+            <div class="tl-desc">3 things that would make today a win. Write them. Close Tasks. Start on priority 1.</div>
+          </div>
+        </li>
+        <li class="tl-item">
+          <div class="tl-time">7:00–9:00</div>
+          <div class="tl-dot" style="background:var(--lime)"></div>
+          <div class="tl-body">
+            <div class="tl-name">Deep Work block — Focus mode on</div>
+            <div class="tl-desc">Most important work of the day. DND. No social. AI tools only. Phone face down if possible.</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">⚡ Midday block — 9:00 AM–12:00 PM</div>
+      <ul class="timeline">
+        <li class="tl-item">
+          <div class="tl-time">9:00</div>
+          <div class="tl-dot" style="background:var(--amber)"></div>
+          <div class="tl-body">
+            <div class="tl-name">Communications window</div>
+            <div class="tl-desc">Reply to messages, emails, DMs. One focused window. Not scattered throughout the day.</div>
+          </div>
+        </li>
+        <li class="tl-item">
+          <div class="tl-time">10:00–12:00</div>
+          <div class="tl-dot" style="background:var(--amber)"></div>
+          <div class="tl-body">
+            <div class="tl-name">Publishing / output block</div>
+            <div class="tl-desc">Create content. Edit video. Write newsletter. Run the Research → Publish pipeline.</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">🌆 Afternoon block — 12:00–6:00 PM</div>
+      <ul class="timeline">
+        <li class="tl-item">
+          <div class="tl-time">12:00</div>
+          <div class="tl-dot" style="background:var(--text3)"></div>
+          <div class="tl-body">
+            <div class="tl-name">Lunch — no phone</div>
+            <div class="tl-desc">Actual break. Screen off. Eat like a human.</div>
+          </div>
+        </li>
+        <li class="tl-item">
+          <div class="tl-time">1:00–5:00</div>
+          <div class="tl-dot" style="background:var(--teal)"></div>
+          <div class="tl-body">
+            <div class="tl-name">Project work + calls</div>
+            <div class="tl-desc">REPURPOSE dev. Staunton Pulse stories. Client work. Use DeX if at desk.</div>
+          </div>
+        </li>
+        <li class="tl-item">
+          <div class="tl-time">5:00</div>
+          <div class="tl-dot" style="background:var(--lime)"></div>
+          <div class="tl-body">
+            <div class="tl-name">End-of-day shutdown</div>
+            <div class="tl-desc">Check off tasks. Park tomorrow's priorities in Google Tasks. Close all apps. Brain downloads complete.</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">🌙 Evening — 6:00 PM onward</div>
+      <ul class="timeline">
+        <li class="tl-item">
+          <div class="tl-time">6:00–9:00</div>
+          <div class="tl-dot" style="background:var(--violet)"></div>
+          <div class="tl-body">
+            <div class="tl-name">Life block</div>
+            <div class="tl-desc">Family. Movement. Real world. Phone in Life folder mode — only Messages, Phone, Maps.</div>
+          </div>
+        </li>
+        <li class="tl-item">
+          <div class="tl-time">9:30</div>
+          <div class="tl-dot" style="background:var(--violet)"></div>
+          <div class="tl-body">
+            <div class="tl-name">Wind Down routine fires</div>
+            <div class="tl-desc">Routines+ automation activates. Eye Comfort + Extra Dim + Recovery focus mode. Warm and dark.</div>
+          </div>
+        </li>
+        <li class="tl-item">
+          <div class="tl-time">10:00</div>
+          <div class="tl-dot" style="background:var(--text3)"></div>
+          <div class="tl-body">
+            <div class="tl-name">Phone down for the night</div>
+            <div class="tl-desc">Charger. Not on nightstand. Another room if possible. Sleep is recovery infrastructure.</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="cl-wrap">
+      <div class="cl-title">Checklist</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Run the full daily OS for 7 consecutive days</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Set 3 priorities every morning in Google Tasks — no exceptions</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Use the communications window — not scattered replies all day</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Do a full daily shutdown ritual every weekday</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Phone out of bedroom for 7 nights straight</div>
+      <div class="ci" onclick="tick(this)"><div class="cb"></div>Complete Phase 2 — you now have a fully operational Founder OS</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const MAP={ai:0,workflows:1,automation:2,dex:3,content:4,overwhelm:5,routine:6};
+
+function show(id){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('vis'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById(id).classList.add('vis');
+  document.querySelectorAll('.nb')[MAP[id]].classList.add('on');
+  prog();
+}
+
+function tick(el){
+  el.classList.toggle('done');
+  el.querySelector('.cb').textContent=el.classList.contains('done')?'✓':'';
+  prog();
+}
+
+function prog(){
+  const all=document.querySelectorAll('.ci');
+  const done=document.querySelectorAll('.ci.done');
+  const pct=all.length?Math.round(done.length/all.length*100):0;
+  document.getElementById('pf').style.width=pct+'%';
+  document.getElementById('pl').textContent=done.length+' / '+all.length+' done';
+}
+
+prog();
+</script>
+</body>
+</html>
