@@ -192,10 +192,10 @@ hr{border:none;border-top:1px solid var(--border);margin:20px 0}
 .inbox-rule{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:11px;color:var(--text2)}
 .inbox-rule:last-child{border-bottom:none}
 .inbox-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.folder-tabs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:20px}
-.ftab{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);color:var(--text3);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px}
-.ftab:hover{color:var(--text2);border-color:var(--border-hi)}
-.ftab.fon{background:var(--bg3);color:var(--text);border-color:var(--border-hi)}
+.folder-tabs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:20px;background:var(--bg1);border:1px solid var(--border);border-radius:var(--r-lg);padding:4px}
+.ftab{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:7px 14px;border-radius:8px;border:none;background:transparent;color:var(--text3);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.ftab:hover{color:var(--text2);background:var(--bg2)}
+.ftab.fon{background:var(--bg3);color:var(--text);border:1px solid var(--border-hi)}
 .fpanel{display:none}.fpanel.fvis{display:block;animation:up .2s ease}
 
 @media(max-width:500px){
@@ -216,6 +216,7 @@ hr{border:none;border-top:1px solid var(--border);margin:20px 0}
   <h1 class="title">Founder<br><em>OS</em></h1>
   <div class="sub">Mobile command center for solo founders</div>
   <div class="phase-tag">Phase 2 — AI, Automation &amp; Output</div>
+  <a href="index.html" style="display:inline-flex;align-items:center;gap:6px;font-size:10px;color:var(--text3);text-decoration:none;letter-spacing:.08em;margin-bottom:20px;margin-top:-10px;font-family:var(--font-mono);transition:color .15s" onmouseover="this.style.color='var(--text2)'" onmouseout="this.style.color='var(--text3)'">← Phase 1</a>
 
   <div class="prog-wrap">
     <div class="prog-bar"><div class="prog-fill" id="pf"></div></div>
@@ -227,10 +228,10 @@ hr{border:none;border-top:1px solid var(--border);margin:20px 0}
     <button class="nb" onclick="show('workflows')">Workflows</button>
     <button class="nb" onclick="show('automation')">Automation</button>
     <button class="nb" onclick="show('dex')">DeX</button>
-    <button class="nb" onclick="show('content')">Content</button>
+    <button class="nb" onclick="show('content')">Studio</button>
     <button class="nb" onclick="show('overwhelm')">Anti-Overwhelm</button>
     <button class="nb" onclick="show('routine')">Daily OS</button>
-    <button class="nb" onclick="show('folders')">Folders</button>
+    <button class="nb" onclick="show('folders')">Drive Setup</button>
   </nav>
 
   <!-- ══ AI STACK ══ -->
@@ -748,7 +749,7 @@ hr{border:none;border-top:1px solid var(--border);margin:20px 0}
 
   <!-- ══ FOLDERS ══ -->
   <div id="folders" class="sec">
-    <div class="slabel">Step 17 — Google Drive master folder architecture</div>
+    <div class="slabel">Google Drive master folder architecture</div>
     <div class="note"><strong>Everything has a home. Nothing gets lost.</strong> Five root folders. Each one has a single job. Nothing crosses over.</div>
 
     <div class="folder-tabs">
