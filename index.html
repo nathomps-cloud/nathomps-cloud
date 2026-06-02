@@ -537,7 +537,7 @@ hr{border:none;border-top:1px solid var(--border);margin:20px 0}
       <div class="ci" onclick="tick(this)"><div class="cb"></div>Schedule weekly capture review (Sundays work)</div>
     </div>
 
-    <button class="p2-btn" onclick="alert('Phase 2 coming next — AI workflows, automation, DeX, content pipelines, anti-overwhelm systems.')">
+    <button class="p2-btn" onclick="window.location.href='founder_os_phase2_folders.html'">
       Start Phase 2 ↗
     </button>
   </div>
@@ -582,7 +582,7 @@ function clock(){
   if(d)d.textContent=days[now.getDay()]+', '+months[now.getMonth()]+' '+now.getDate();
 }
 clock();
-setInterval(clock,10000);
+setInterval(clock,60000);
 prog();
 </script>
 </body>
