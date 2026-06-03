@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
 :root{
   --bg:#0c0c0e;--bg1:#131316;--bg2:#1a1a1f;--bg3:#222228;
   --border:rgba(255,255,255,0.06);--border-hi:rgba(255,255,255,0.12);
@@ -21,94 +22,176 @@
   --font-head:'Syne',sans-serif;--font-mono:'DM Mono',monospace;
   --r:10px;--r-lg:14px;
 }
-html{background:var(--bg);color:var(--text);font-family:var(--font-mono);-webkit-font-smoothing:antialiased;min-height:100vh}
-.shell{max-width:820px;margin:0 auto;padding:52px 24px 100px}
 
-/* header */
+html{background:var(--bg);color:var(--text);font-family:var(--font-mono);-webkit-font-smoothing:antialiased;min-height:100vh}
+.shell{max-width:860px;margin:0 auto;padding:40px 24px 100px}
+
+/* ── PHASE NAV ── */
+.phase-nav{display:flex;align-items:center;gap:8px;margin-bottom:28px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-family:var(--font-mono)}
+.phase-nav-link{color:var(--text3);text-decoration:none;display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg1);transition:all .15s}
+.phase-nav-link:hover{color:var(--text2);border-color:var(--border-hi)}
+.phase-nav-sep{color:var(--text3)}
+.phase-nav-current{color:var(--lime);background:var(--lime-dim);border:1px solid var(--lime-bd);padding:4px 10px;border-radius:6px}
+
+/* ── HEADER ── */
 .eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text3);margin-bottom:12px}
 .title{font-family:var(--font-head);font-size:clamp(30px,6vw,48px);font-weight:800;line-height:.95;letter-spacing:-.03em;color:var(--text);margin-bottom:6px}
 .title em{font-style:normal;color:var(--lime)}
 .sub{font-size:12px;color:var(--text3);letter-spacing:.05em;margin-bottom:6px}
-.phase-tag{display:inline-flex;align-items:center;gap:6px;margin-top:14px;margin-bottom:40px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--lime);background:var(--lime-dim);border:1px solid var(--lime-bd);border-radius:6px;padding:5px 12px}
+.phase-tag{display:inline-flex;align-items:center;gap:6px;margin-top:14px;margin-bottom:32px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--lime);background:var(--lime-dim);border:1px solid var(--lime-bd);border-radius:6px;padding:5px 12px}
 .phase-tag::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--lime);flex-shrink:0}
 
-/* progress */
+/* ── PROGRESS ── */
 .prog-wrap{display:flex;align-items:center;gap:12px;margin-bottom:32px}
 .prog-bar{flex:1;height:2px;background:var(--bg3);border-radius:2px;overflow:hidden}
 .prog-fill{height:100%;background:var(--lime);border-radius:2px;transition:width .4s cubic-bezier(.4,0,.2,1);width:0%}
 .prog-pct{font-size:10px;color:var(--text3);letter-spacing:.1em;white-space:nowrap}
 
-/* layout */
-.layout{display:grid;grid-template-columns:240px 1fr;gap:16px;align-items:start}
-@media(max-width:620px){.layout{grid-template-columns:1fr}}
+/* ── LAYOUT ── */
+.layout{display:grid;grid-template-columns:224px 1fr;gap:16px;align-items:start}
 
-/* sidebar tree */
-.tree-wrap{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;position:sticky;top:24px}
-.tree-title{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:14px}
+/* ── SIDEBAR ── */
+.tree-wrap{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px;position:sticky;top:24px}
+.tree-title{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;padding-left:4px}
 .tree-root{list-style:none}
-.tree-root>li{margin-bottom:4px}
-.folder-btn{width:100%;text-align:left;background:transparent;border:none;cursor:pointer;padding:7px 10px;border-radius:8px;font-family:var(--font-mono);font-size:11px;color:var(--text2);display:flex;align-items:center;gap:8px;transition:all .15s;letter-spacing:.02em}
+.tree-root>li{margin-bottom:2px}
+
+.folder-btn{
+  width:100%;text-align:left;background:transparent;
+  border:none;border-left:2px solid transparent;
+  cursor:pointer;padding:7px 10px 7px 8px;border-radius:8px;
+  font-family:var(--font-mono);font-size:11px;color:var(--text2);
+  display:flex;align-items:center;gap:8px;transition:all .15s;letter-spacing:.02em
+}
 .folder-btn:hover{background:var(--bg2);color:var(--text)}
 .folder-btn.on{color:var(--text);font-weight:500}
-.folder-icon{width:18px;height:18px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
-.sub-list{list-style:none;margin:3px 0 3px 26px}
-.sub-list li{padding:4px 6px;font-size:10px;color:var(--text3);display:flex;align-items:center;gap:6px;border-radius:5px;cursor:pointer;transition:color .12s}
-.sub-list li:hover{color:var(--text2)}
+
+/* per-folder active state */
+#btn-command.on{background:var(--teal-dim);border-left-color:var(--teal)}
+#btn-projects.on{background:var(--lime-dim);border-left-color:var(--lime)}
+#btn-content.on{background:var(--amber-dim);border-left-color:var(--amber)}
+#btn-ai.on{background:var(--violet-dim);border-left-color:var(--violet)}
+#btn-inbox.on{background:var(--coral-dim);border-left-color:var(--coral)}
+
+.folder-icon{width:20px;height:20px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+
+/* sidebar completion badges */
+.prog-badge{
+  margin-left:auto;font-size:9px;letter-spacing:.04em;padding:2px 6px;border-radius:4px;
+  background:var(--bg3);color:var(--text3);border:1px solid var(--border);
+  flex-shrink:0;transition:all .2s;font-family:var(--font-mono);
+}
+#btn-command .prog-badge.partial{color:var(--teal);background:var(--teal-dim);border-color:var(--teal-bd)}
+#btn-command .prog-badge.complete{color:var(--teal);background:var(--teal-dim);border-color:var(--teal-bd)}
+#btn-projects .prog-badge.partial{color:var(--lime);background:var(--lime-dim);border-color:var(--lime-bd)}
+#btn-projects .prog-badge.complete{color:var(--lime);background:var(--lime-dim);border-color:var(--lime-bd)}
+#btn-content .prog-badge.partial{color:var(--amber);background:var(--amber-dim);border-color:var(--amber-bd)}
+#btn-content .prog-badge.complete{color:var(--amber);background:var(--amber-dim);border-color:var(--amber-bd)}
+#btn-ai .prog-badge.partial{color:var(--violet);background:var(--violet-dim);border-color:var(--violet-bd)}
+#btn-ai .prog-badge.complete{color:var(--violet);background:var(--violet-dim);border-color:var(--violet-bd)}
+#btn-inbox .prog-badge.partial{color:var(--coral);background:var(--coral-dim);border-color:var(--coral-bd)}
+#btn-inbox .prog-badge.complete{color:var(--coral);background:var(--coral-dim);border-color:var(--coral-bd)}
+
+.sub-list{list-style:none;margin:2px 0 4px 28px}
+.sub-list li{
+  padding:4px 8px;font-size:10px;color:var(--text3);display:flex;align-items:center;
+  gap:6px;border-radius:5px;cursor:pointer;transition:all .12s;letter-spacing:.02em
+}
+.sub-list li:hover{color:var(--text2);background:var(--bg2)}
 .sub-list li::before{content:'└';font-size:9px;color:var(--text3);flex-shrink:0}
 
-/* content panel */
-.panel{display:none}.panel.vis{display:block;animation:up .2s ease}
-@keyframes up{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+/* ── CONTENT PANELS ── */
+.panel{display:none}.panel.vis{display:block;animation:up .18s ease}
+@keyframes up{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 
-/* folder header */
-.fh{display:flex;align-items:center;gap:14px;margin-bottom:24px}
-.fh-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
-.fh-name{font-family:var(--font-head);font-size:22px;font-weight:800;letter-spacing:-.02em;color:var(--text)}
-.fh-path{font-size:11px;margin-top:2px;letter-spacing:.04em}
-.fh-desc{font-size:12px;color:var(--text2);margin-top:8px;line-height:1.6;padding:10px 14px;background:var(--bg2);border-radius:var(--r);border-left:2px solid var(--border-hi)}
+/* ── FOLDER HEADER ── */
+.fh{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.fh-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.fh-meta{flex:1}
+.fh-name{font-family:var(--font-head);font-size:22px;font-weight:800;letter-spacing:-.02em;color:var(--text);margin-bottom:3px}
+.fh-path{font-size:10px;letter-spacing:.04em}
+.fh-desc{
+  font-size:12px;color:var(--text2);margin-top:16px;line-height:1.65;
+  padding:12px 16px;background:var(--bg2);border-radius:var(--r);
+  border-left:2px solid var(--fh-border,var(--border-hi));margin-bottom:4px
+}
+#command .fh-desc{--fh-border:var(--teal-bd)}
+#projects .fh-desc{--fh-border:var(--lime-bd)}
+#content .fh-desc{--fh-border:var(--amber-bd)}
+#ai .fh-desc{--fh-border:var(--violet-bd)}
+#inbox .fh-desc{--fh-border:var(--coral-bd)}
 
-/* subfolder cards */
-.sub-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:20px 0}
-.sub-card{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden}
-.sub-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:2px 2px 0 0}
-.sub-card:hover{border-color:var(--border-hi);transform:translateY(-1px)}
+.path-chip{display:inline-block;font-size:10px;font-family:var(--font-mono);background:var(--bg2);border:1px solid var(--border);border-radius:5px;padding:2px 8px;color:var(--text3);letter-spacing:.04em}
+
+/* ── SUB-CARDS ── */
+.sub-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:18px 0}
+.sub-card{
+  background:var(--bg1);border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:16px;transition:border-color .15s,transform .15s,box-shadow .15s;
+  position:relative;overflow:hidden
+}
+.sub-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--card-accent,var(--border-hi));
+  border-radius:var(--r-lg) var(--r-lg) 0 0
+}
+.sub-card:hover{border-color:var(--border-hi);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.35)}
+.sub-card.flash{animation:cardflash .5s ease}
+@keyframes cardflash{
+  0%{border-color:var(--border)}
+  40%{border-color:var(--card-accent,var(--border-hi));box-shadow:0 0 14px var(--card-glow,rgba(255,255,255,.08))}
+  100%{border-color:var(--border)}
+}
 .sub-card-name{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:7px}
 .sub-card-desc{font-size:10px;color:var(--text3);line-height:1.6}
-.sub-card-path{font-size:9px;letter-spacing:.1em;margin-top:10px;color:var(--text3)}
+.sub-card-path{font-size:9px;letter-spacing:.1em;margin-top:10px;color:var(--text3);font-family:var(--font-mono)}
 
-/* rules */
-.rules{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px 20px;margin-top:0}
-.rules-title{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:12px}
-.rule-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:11px;color:var(--text2);line-height:1.5}
+/* ── RULES ── */
+.rules{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px 20px}
+.rules-title{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--text3);margin-bottom:12px}
+.rule-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:11px;color:var(--text2);line-height:1.55}
 .rule-row:last-child{border-bottom:none}
-.rule-num{font-size:9px;color:var(--text3);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:2px 6px;flex-shrink:0;margin-top:1px;font-weight:500}
+.rule-num{font-size:9px;color:var(--text3);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:2px 6px;flex-shrink:0;margin-top:1px;font-family:var(--font-mono);letter-spacing:.04em}
 
-/* checklist */
+/* ── CHECKLIST ── */
 .cl-wrap{margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
-.cl-title{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);margin-bottom:10px}
-.ci{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:11px;color:var(--text2);cursor:pointer;user-select:none;transition:color .12s}
+.cl-title{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:10px}
+.ci{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:11px;color:var(--text2);cursor:pointer;user-select:none;transition:color .12s;font-family:var(--font-mono)}
 .ci:last-child{border-bottom:none}.ci:hover{color:var(--text)}
 .ci.done{color:var(--text3);text-decoration:line-through}
 .cb{width:16px;height:16px;border:1px solid var(--border-hi);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;color:transparent;transition:all .15s}
 .ci.done .cb{background:var(--lime-dim);border-color:var(--lime-bd);color:var(--lime)}
 
-/* inbox special */
+/* ── INBOX SPECIAL ── */
 .inbox-card{background:var(--bg1);border:1px solid var(--amber-bd);border-radius:var(--r-lg);padding:20px;margin-bottom:14px}
-.inbox-rule{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:11px;color:var(--text2)}
+.inbox-rule{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:11px;color:var(--text2);line-height:1.5}
 .inbox-rule:last-child{border-bottom:none}
 .inbox-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.inbox-rule.alert .inbox-dot{animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
 
-/* badge */
-.badge{font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:4px;font-weight:500;flex-shrink:0}
+/* ── KEY HINT ── */
+.key-hint{text-align:center;font-size:9px;color:var(--text3);letter-spacing:.1em;margin-top:28px;padding-top:20px;border-top:1px solid var(--border)}
+.key-hint kbd{background:var(--bg2);border:1px solid var(--border);border-radius:3px;padding:1px 6px;font-family:var(--font-mono);color:var(--text3)}
 
-/* path chip */
-.path-chip{display:inline-block;font-size:10px;font-family:var(--font-mono);background:var(--bg2);border:1px solid var(--border);border-radius:5px;padding:2px 8px;color:var(--text3);letter-spacing:.04em}
-
-@media(max-width:500px){.shell{padding:32px 16px 80px}.title{font-size:30px}.fh-name{font-size:18px}}
+@media(max-width:640px){
+  .layout{grid-template-columns:1fr}
+  .tree-wrap{position:static}
+  .shell{padding:28px 16px 80px}
+  .title{font-size:30px}
+  .fh-name{font-size:18px}
+  .key-hint{display:none}
+}
 </style>
 </head>
 <body>
 <div class="shell">
+
+  <div class="phase-nav">
+    <a href="index.html" class="phase-nav-link">← Phase 1</a>
+    <span class="phase-nav-sep">/</span>
+    <span class="phase-nav-current">Phase 2</span>
+  </div>
 
   <div class="eyebrow">Galaxy S22+ · Phase 2 · Master Folder Structure</div>
   <h1 class="title">Founder<br><em>OS</em></h1>
@@ -122,22 +205,23 @@ html{background:var(--bg);color:var(--text);font-family:var(--font-mono);-webkit
 
   <div class="layout">
 
-    <!-- SIDEBAR TREE -->
+    <!-- SIDEBAR -->
     <aside>
       <div class="tree-wrap">
-        <div class="tree-title">File tree</div>
+        <div class="tree-title">Drive structure</div>
         <ul class="tree-root">
 
           <li>
             <button class="folder-btn on" id="btn-command" onclick="show('command')">
               <div class="folder-icon" style="background:var(--teal-dim);color:var(--teal)">⌘</div>
               /COMMAND
+              <span class="prog-badge" id="badge-command"></span>
             </button>
             <ul class="sub-list">
-              <li onclick="show('command')">finances</li>
-              <li onclick="show('command')">legal</li>
-              <li onclick="show('command')">passwords</li>
-              <li onclick="show('command')">important docs</li>
+              <li onclick="jumpTo('sc-finances')">finances</li>
+              <li onclick="jumpTo('sc-legal')">legal</li>
+              <li onclick="jumpTo('sc-passwords')">passwords</li>
+              <li onclick="jumpTo('sc-docs')">important docs</li>
             </ul>
           </li>
 
@@ -145,12 +229,13 @@ html{background:var(--bg);color:var(--text);font-family:var(--font-mono);-webkit
             <button class="folder-btn" id="btn-projects" onclick="show('projects')">
               <div class="folder-icon" style="background:var(--lime-dim);color:var(--lime)">⚒</div>
               /PROJECTS
+              <span class="prog-badge" id="badge-projects"></span>
             </button>
             <ul class="sub-list">
-              <li onclick="show('projects')">REPURPOSE</li>
-              <li onclick="show('projects')">Staunton Pulse</li>
-              <li onclick="show('projects')">archive</li>
-              <li onclick="show('projects')">experiments</li>
+              <li onclick="jumpTo('sc-repurpose')">REPURPOSE</li>
+              <li onclick="jumpTo('sc-pulse')">Staunton Pulse</li>
+              <li onclick="jumpTo('sc-archive')">archive</li>
+              <li onclick="jumpTo('sc-experiments')">experiments</li>
             </ul>
           </li>
 
@@ -158,12 +243,13 @@ html{background:var(--bg);color:var(--text);font-family:var(--font-mono);-webkit
             <button class="folder-btn" id="btn-content" onclick="show('content')">
               <div class="folder-icon" style="background:var(--amber-dim);color:var(--amber)">📡</div>
               /CONTENT
+              <span class="prog-badge" id="badge-content"></span>
             </button>
             <ul class="sub-list">
-              <li onclick="show('content')">newsletter assets</li>
-              <li onclick="show('content')">videos</li>
-              <li onclick="show('content')">screenshots</li>
-              <li onclick="show('content')">drafts</li>
+              <li onclick="jumpTo('sc-newsletter')">newsletter assets</li>
+              <li onclick="jumpTo('sc-videos')">videos</li>
+              <li onclick="jumpTo('sc-screenshots')">screenshots</li>
+              <li onclick="jumpTo('sc-drafts')">drafts</li>
             </ul>
           </li>
 
@@ -171,12 +257,13 @@ html{background:var(--bg);color:var(--text);font-family:var(--font-mono);-webkit
             <button class="folder-btn" id="btn-ai" onclick="show('ai')">
               <div class="folder-icon" style="background:var(--violet-dim);color:var(--violet)">🤖</div>
               /AI
+              <span class="prog-badge" id="badge-ai"></span>
             </button>
             <ul class="sub-list">
-              <li onclick="show('ai')">prompts</li>
-              <li onclick="show('ai')">workflows</li>
-              <li onclick="show('ai')">templates</li>
-              <li onclick="show('ai')">research</li>
+              <li onclick="jumpTo('sc-prompts')">prompts</li>
+              <li onclick="jumpTo('sc-workflows')">workflows</li>
+              <li onclick="jumpTo('sc-templates')">templates</li>
+              <li onclick="jumpTo('sc-research')">research</li>
             </ul>
           </li>
 
@@ -184,6 +271,7 @@ html{background:var(--bg);color:var(--text);font-family:var(--font-mono);-webkit
             <button class="folder-btn" id="btn-inbox" onclick="show('inbox')">
               <div class="folder-icon" style="background:var(--coral-dim);color:var(--coral)">📥</div>
               /INBOX
+              <span class="prog-badge" id="badge-inbox"></span>
             </button>
           </li>
 
@@ -191,14 +279,14 @@ html{background:var(--bg);color:var(--text);font-family:var(--font-mono);-webkit
       </div>
     </aside>
 
-    <!-- MAIN CONTENT -->
+    <!-- MAIN -->
     <main>
 
       <!-- ══ COMMAND ══ -->
       <div id="command" class="panel vis">
         <div class="fh">
           <div class="fh-icon" style="background:var(--teal-dim)">⌘</div>
-          <div>
+          <div class="fh-meta">
             <div class="fh-name">/COMMAND</div>
             <div class="fh-path"><span class="path-chip">Google Drive / COMMAND</span></div>
           </div>
@@ -206,22 +294,22 @@ html{background:var(--bg);color:var(--text);font-family:var(--font-mono);-webkit
         <div class="fh-desc">Your business nerve center. Mission-critical documents only. If it involves money, identity, or legal protection — it lives here.</div>
 
         <div class="sub-grid">
-          <div class="sub-card" style="border-top-color:var(--teal)">
+          <div class="sub-card" id="sc-finances" style="--card-accent:var(--teal);--card-glow:rgba(74,240,200,.15)">
             <div class="sub-card-name">💰 finances</div>
             <div class="sub-card-desc">Invoices, receipts, tax docs, Stripe exports, bank statements, P&L snapshots</div>
             <div class="sub-card-path">/COMMAND/finances</div>
           </div>
-          <div class="sub-card" style="border-top-color:var(--teal)">
+          <div class="sub-card" id="sc-legal" style="--card-accent:var(--teal);--card-glow:rgba(74,240,200,.15)">
             <div class="sub-card-name">⚖️ legal</div>
             <div class="sub-card-desc">Contracts, NDAs, LLC docs, terms of service, client agreements, IP filings</div>
             <div class="sub-card-path">/COMMAND/legal</div>
           </div>
-          <div class="sub-card" style="border-top-color:var(--teal)">
+          <div class="sub-card" id="sc-passwords" style="--card-accent:var(--teal);--card-glow:rgba(74,240,200,.15)">
             <div class="sub-card-name">🔐 passwords</div>
             <div class="sub-card-desc">Bitwarden export backups only. Emergency access doc. Recovery codes.</div>
             <div class="sub-card-path">/COMMAND/passwords</div>
           </div>
-          <div class="sub-card" style="border-top-color:var(--teal)">
+          <div class="sub-card" id="sc-docs" style="--card-accent:var(--teal);--card-glow:rgba(74,240,200,.15)">
             <div class="sub-card-name">📄 important docs</div>
             <div class="sub-card-desc">IDs, insurance, school records, medical docs, anything you'd need in a crisis</div>
             <div class="sub-card-path">/COMMAND/important docs</div>
@@ -252,7 +340,7 @@ html{background:var(--bg);color:var(--text);font-family:var(--font-mono);-webkit
       <div id="projects" class="panel">
         <div class="fh">
           <div class="fh-icon" style="background:var(--lime-dim)">⚒</div>
-          <div>
+          <div class="fh-meta">
             <div class="fh-name">/PROJECTS</div>
             <div class="fh-path"><span class="path-chip">Google Drive / PROJECTS</span></div>
           </div>
@@ -260,22 +348,22 @@ html{background:var(--bg);color:var(--text);font-family:var(--font-mono);-webkit
         <div class="fh-desc">One folder per active venture. Each project folder is its own operating unit — brief, assets, docs, research, and outputs all contained inside it.</div>
 
         <div class="sub-grid">
-          <div class="sub-card" style="border-top-color:var(--lime)">
+          <div class="sub-card" id="sc-repurpose" style="--card-accent:var(--lime);--card-glow:rgba(200,240,74,.12)">
             <div class="sub-card-name">♻️ REPURPOSE</div>
             <div class="sub-card-desc">AI SaaS platform. Product docs, roadmap, dev notes, client assets, feature specs</div>
             <div class="sub-card-path">/PROJECTS/REPURPOSE</div>
           </div>
-          <div class="sub-card" style="border-top-color:var(--lime)">
+          <div class="sub-card" id="sc-pulse" style="--card-accent:var(--lime);--card-glow:rgba(200,240,74,.12)">
             <div class="sub-card-name">📰 Staunton Pulse</div>
             <div class="sub-card-desc">Local media ops. Story files, source notes, photos, published issues, editorial calendar</div>
             <div class="sub-card-path">/PROJECTS/Staunton Pulse</div>
           </div>
-          <div class="sub-card" style="border-top-color:var(--lime)">
+          <div class="sub-card" id="sc-archive" style="--card-accent:var(--lime);--card-glow:rgba(200,240,74,.12)">
             <div class="sub-card-name">🗄️ archive</div>
             <div class="sub-card-desc">Photojournalism archive. Field documentation. Historical project records. Source files.</div>
             <div class="sub-card-path">/PROJECTS/archive</div>
           </div>
-          <div class="sub-card" style="border-top-color:var(--lime)">
+          <div class="sub-card" id="sc-experiments" style="--card-accent:var(--lime);--card-glow:rgba(200,240,74,.12)">
             <div class="sub-card-name">🧪 experiments</div>
             <div class="sub-card-desc">Low-stakes tests, side builds, ideas being validated. Nothing here is permanent.</div>
             <div class="sub-card-path">/PROJECTS/experiments</div>
@@ -306,7 +394,7 @@ html{background:var(--bg);color:var(--text);font-family:var(--font-mono);-webkit
       <div id="content" class="panel">
         <div class="fh">
           <div class="fh-icon" style="background:var(--amber-dim)">📡</div>
-          <div>
+          <div class="fh-meta">
             <div class="fh-name">/CONTENT</div>
             <div class="fh-path"><span class="path-chip">Google Drive / CONTENT</span></div>
           </div>
@@ -314,22 +402,22 @@ html{background:var(--bg);color:var(--text);font-family:var(--font-mono);-webkit
         <div class="fh-desc">Your content production pipeline. Everything moves through here from raw capture to published output. Organized by type, not by project.</div>
 
         <div class="sub-grid">
-          <div class="sub-card" style="border-top-color:var(--amber)">
+          <div class="sub-card" id="sc-newsletter" style="--card-accent:var(--amber);--card-glow:rgba(240,184,74,.12)">
             <div class="sub-card-name">📧 newsletter assets</div>
             <div class="sub-card-desc">Headers, dividers, brand images, issue covers, promo graphics for Substack + Beehiiv</div>
             <div class="sub-card-path">/CONTENT/newsletter assets</div>
           </div>
-          <div class="sub-card" style="border-top-color:var(--amber)">
+          <div class="sub-card" id="sc-videos" style="--card-accent:var(--amber);--card-glow:rgba(240,184,74,.12)">
             <div class="sub-card-name">🎥 videos</div>
             <div class="sub-card-desc">Raw footage, edited exports, vertical cuts, B-roll, interview recordings</div>
             <div class="sub-card-path">/CONTENT/videos</div>
           </div>
-          <div class="sub-card" style="border-top-color:var(--amber)">
+          <div class="sub-card" id="sc-screenshots" style="--card-accent:var(--amber);--card-glow:rgba(240,184,74,.12)">
             <div class="sub-card-name">📸 screenshots</div>
             <div class="sub-card-desc">Processed screenshots ready for use — not raw device dumps. Reviewed and curated.</div>
             <div class="sub-card-path">/CONTENT/screenshots</div>
           </div>
-          <div class="sub-card" style="border-top-color:var(--amber)">
+          <div class="sub-card" id="sc-drafts" style="--card-accent:var(--amber);--card-glow:rgba(240,184,74,.12)">
             <div class="sub-card-name">✍️ drafts</div>
             <div class="sub-card-desc">In-progress writing. Newsletter issues, thread drafts, article WIPs. Nothing finished here.</div>
             <div class="sub-card-path">/CONTENT/drafts</div>
@@ -359,7 +447,7 @@ html{background:var(--bg);color:var(--text);font-family:var(--font-mono);-webkit
       <div id="ai" class="panel">
         <div class="fh">
           <div class="fh-icon" style="background:var(--violet-dim)">🤖</div>
-          <div>
+          <div class="fh-meta">
             <div class="fh-name">/AI</div>
             <div class="fh-path"><span class="path-chip">Google Drive / AI</span></div>
           </div>
@@ -367,22 +455,22 @@ html{background:var(--bg);color:var(--text);font-family:var(--font-mono);-webkit
         <div class="fh-desc">Your AI operations brain. This is where your leverage compounds. Every prompt you write, every workflow you design, every template you build lives here — reusable forever.</div>
 
         <div class="sub-grid">
-          <div class="sub-card" style="border-top-color:var(--violet)">
+          <div class="sub-card" id="sc-prompts" style="--card-accent:var(--violet);--card-glow:rgba(160,122,240,.12)">
             <div class="sub-card-name">💬 prompts</div>
             <div class="sub-card-desc">Master prompt library. Organized by use case. Newsletter prompts, code prompts, research prompts, editing prompts.</div>
             <div class="sub-card-path">/AI/prompts</div>
           </div>
-          <div class="sub-card" style="border-top-color:var(--violet)">
+          <div class="sub-card" id="sc-workflows" style="--card-accent:var(--violet);--card-glow:rgba(160,122,240,.12)">
             <div class="sub-card-name">⚡ workflows</div>
             <div class="sub-card-desc">Step-by-step AI-powered SOPs. Content pipeline, research pipeline, publishing flow, code review flow.</div>
             <div class="sub-card-path">/AI/workflows</div>
           </div>
-          <div class="sub-card" style="border-top-color:var(--violet)">
+          <div class="sub-card" id="sc-templates" style="--card-accent:var(--violet);--card-glow:rgba(160,122,240,.12)">
             <div class="sub-card-name">📋 templates</div>
             <div class="sub-card-desc">Reusable output formats. Newsletter templates, thread templates, brief templates, email templates.</div>
             <div class="sub-card-path">/AI/templates</div>
           </div>
-          <div class="sub-card" style="border-top-color:var(--violet)">
+          <div class="sub-card" id="sc-research" style="--card-accent:var(--violet);--card-glow:rgba(160,122,240,.12)">
             <div class="sub-card-name">🔬 research</div>
             <div class="sub-card-desc">AI-generated research outputs, summaries, competitor analysis, market notes. Dated and filed.</div>
             <div class="sub-card-path">/AI/research</div>
@@ -413,7 +501,7 @@ html{background:var(--bg);color:var(--text);font-family:var(--font-mono);-webkit
       <div id="inbox" class="panel">
         <div class="fh">
           <div class="fh-icon" style="background:var(--coral-dim)">📥</div>
-          <div>
+          <div class="fh-meta">
             <div class="fh-name">/INBOX</div>
             <div class="fh-path"><span class="path-chip">Google Drive / INBOX</span></div>
           </div>
@@ -428,8 +516,8 @@ html{background:var(--bg);color:var(--text);font-family:var(--font-mono);-webkit
           <div class="inbox-rule"><div class="inbox-dot" style="background:var(--lime)"></div>Processing means: file it, delete it, or act on it. Three options only.</div>
           <div class="inbox-rule"><div class="inbox-dot" style="background:var(--lime)"></div>Nothing stays in /INBOX longer than 48 hours.</div>
           <div class="inbox-rule"><div class="inbox-dot" style="background:var(--lime)"></div>If you don't know where to file it yet — create a home for it. Don't leave it in INBOX.</div>
-          <div class="inbox-rule"><div class="inbox-dot" style="background:var(--amber)"></div>If /INBOX is overflowing — you've skipped processing. Stop everything. Clear it now.</div>
-          <div class="inbox-rule"><div class="inbox-dot" style="background:var(--amber)"></div>A full INBOX is a sign your system is under stress. It is not normal. Treat it as an alert.</div>
+          <div class="inbox-rule alert"><div class="inbox-dot" style="background:var(--amber)"></div>If /INBOX is overflowing — you've skipped processing. Stop everything. Clear it now.</div>
+          <div class="inbox-rule alert"><div class="inbox-dot" style="background:var(--amber)"></div>A full INBOX is a sign your system is under stress. It is not normal. Treat it as an alert.</div>
         </div>
 
         <div class="rules">
@@ -455,21 +543,25 @@ html{background:var(--bg);color:var(--text);font-family:var(--font-mono);-webkit
     </main>
   </div>
 
-</div>
+  <div class="key-hint">
+    <kbd>←</kbd> <kbd>→</kbd> navigate folders &nbsp;·&nbsp; click subfolder names to jump directly
+  </div>
 
+</div>
 <script>
 const PANELS=['command','projects','content','ai','inbox'];
-const MAP={command:0,projects:1,content:2,ai:3,inbox:4};
+let current='command';
 
 function show(id){
   PANELS.forEach(p=>{
     document.getElementById(p).classList.remove('vis');
-    const btn=document.getElementById('btn-'+p);
-    if(btn)btn.classList.remove('on');
+    const b=document.getElementById('btn-'+p);
+    if(b)b.classList.remove('on');
   });
   document.getElementById(id).classList.add('vis');
-  const btn=document.getElementById('btn-'+id);
-  if(btn)btn.classList.add('on');
+  const b=document.getElementById('btn-'+id);
+  if(b)b.classList.add('on');
+  current=id;
   prog();
 }
 
@@ -477,6 +569,8 @@ function tick(el){
   el.classList.toggle('done');
   el.querySelector('.cb').textContent=el.classList.contains('done')?'✓':'';
   prog();
+  const panel=el.closest('.panel');
+  if(panel)updateBadge(panel.id);
 }
 
 function prog(){
@@ -487,6 +581,47 @@ function prog(){
   document.getElementById('pl').textContent=done.length+' / '+all.length+' done';
 }
 
+function updateBadge(id){
+  const panel=document.getElementById(id);
+  if(!panel)return;
+  const all=panel.querySelectorAll('.ci');
+  const done=panel.querySelectorAll('.ci.done');
+  const badge=document.getElementById('badge-'+id);
+  if(!badge||!all.length)return;
+  if(done.length===all.length){
+    badge.textContent='✓';
+    badge.className='prog-badge complete';
+  }else if(done.length>0){
+    badge.textContent=done.length+'/'+all.length;
+    badge.className='prog-badge partial';
+  }else{
+    badge.textContent=all.length+' left';
+    badge.className='prog-badge';
+  }
+}
+
+function jumpTo(cardId){
+  const card=document.getElementById(cardId);
+  if(!card)return;
+  const parentPanel=card.closest('.panel');
+  if(parentPanel&&!parentPanel.classList.contains('vis'))show(parentPanel.id);
+  setTimeout(()=>{
+    card.scrollIntoView({behavior:'smooth',block:'center'});
+    card.classList.add('flash');
+    setTimeout(()=>card.classList.remove('flash'),600);
+  },50);
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
+  if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+    e.preventDefault();
+    const i=PANELS.indexOf(current);
+    show(PANELS[e.key==='ArrowRight'?(i+1)%PANELS.length:(i-1+PANELS.length)%PANELS.length]);
+  }
+});
+
+PANELS.forEach(p=>updateBadge(p));
 prog();
 </script>
 </body>
