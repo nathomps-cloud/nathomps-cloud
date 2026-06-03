@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Damarin — TikTok Skit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#0c0c0e;
+  --bg1:#131316;
+  --bg2:#1a1a1f;
+  --bg3:#222228;
+  --border:rgba(255,255,255,0.06);
+  --border-hi:rgba(255,255,255,0.12);
+  --text:#eeeef0;
+  --text2:#9494a0;
+  --text3:#4a4a55;
+  --lime:#c8f04a;
+  --lime-dim:rgba(200,240,74,0.12);
+  --lime-border:rgba(200,240,74,0.25);
+  --teal:#4af0c8;
+  --teal-dim:rgba(74,240,200,0.1);
+  --teal-border:rgba(74,240,200,0.22);
+  --amber:#f0b84a;
+  --amber-dim:rgba(240,184,74,0.1);
+  --amber-border:rgba(240,184,74,0.22);
+  --violet:#a07af0;
+  --violet-dim:rgba(160,122,240,0.1);
+  --violet-border:rgba(160,122,240,0.22);
+  --red:#f04a6a;
+  --red-dim:rgba(240,74,106,0.1);
+  --red-border:rgba(240,74,106,0.22);
+  --font-head:'Syne',sans-serif;
+  --font-mono:'DM Mono',monospace;
+  --r:10px;
+  --r-lg:14px;
+}
+
+html{background:var(--bg);color:var(--text);font-family:var(--font-mono);-webkit-font-smoothing:antialiased;min-height:100vh}
+.shell{max-width:800px;margin:0 auto;padding:48px 20px 100px}
+
+.eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text3);margin-bottom:12px}
+.title{font-family:var(--font-head);font-size:clamp(28px,7vw,48px);font-weight:800;line-height:.95;letter-spacing:-.03em;color:var(--text);margin-bottom:8px}
+.title em{color:var(--lime);font-style:normal}
+.sub{font-size:12px;color:var(--text3);letter-spacing:.05em;margin-bottom:6px}
+
+.phase-tag{display:inline-flex;align-items:center;gap:6px;margin-top:14px;margin-bottom:40px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--lime);background:var(--lime-dim);border:1px solid var(--lime-border);border-radius:6px;padding:5px 12px}
+.phase-tag::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--lime);flex-shrink:0}
+
+/* NAV */
+.nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:32px}
+.nav-btn{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:7px 14px;border-radius:7px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);cursor:pointer;transition:all .2s}
+.nav-btn.on{background:var(--lime-dim);border-color:var(--lime-border);color:var(--lime)}
+
+/* PANELS */
+.panel{display:none}
+.panel.vis{display:block;animation:fadeUp .35s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* SECTION LABEL */
+.sec-label{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--text3);margin-bottom:16px}
+
+/* CARD */
+.card{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;margin-bottom:14px}
+.card-head{font-family:var(--font-head);font-size:15px;font-weight:700;margin-bottom:4px}
+.card-sub{font-size:11px;color:var(--text2);margin-bottom:14px;letter-spacing:.03em}
+
+/* SHOT ROWS */
+.shot{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start;padding:12px 0;border-bottom:1px solid var(--border)}
+.shot:last-child{border-bottom:none;padding-bottom:0}
+.shot-num{font-family:var(--font-head);font-size:18px;font-weight:800;color:var(--lime);line-height:1}
+.shot-body{}
+.shot-title{font-size:13px;font-weight:500;margin-bottom:3px;color:var(--text)}
+.shot-time{display:inline-block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);background:var(--teal-dim);border:1px solid var(--teal-border);border-radius:4px;padding:2px 7px;margin-bottom:6px}
+.shot-desc{font-size:12px;color:var(--text2);line-height:1.55}
+.shot-overlay{margin-top:8px;background:var(--bg3);border-radius:6px;padding:8px 10px;font-size:12px;color:var(--amber)}
+.shot-overlay::before{content:'TEXT OVERLAY  ';font-size:9px;letter-spacing:.1em;color:var(--text3);display:block;margin-bottom:2px}
+
+/* CAPTION BOX */
+.caption-box{background:var(--bg2);border:1px solid var(--lime-border);border-radius:var(--r);padding:16px 18px;margin-bottom:14px}
+.caption-box .label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--lime);margin-bottom:8px}
+.caption-text{font-size:13px;line-height:1.7;color:var(--text)}
+
+/* AUDIO ROW */
+.audio-row{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.audio-row:last-child{border-bottom:none;padding-bottom:0}
+.audio-icon{width:36px;height:36px;border-radius:8px;background:var(--violet-dim);border:1px solid var(--violet-border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.audio-info{}
+.audio-name{font-family:var(--font-head);font-size:13px;font-weight:700;margin-bottom:2px}
+.audio-why{font-size:11px;color:var(--text2);line-height:1.5}
+.audio-tag{display:inline-block;margin-top:4px;font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:4px}
+.tag-best{background:var(--lime-dim);border:1px solid var(--lime-border);color:var(--lime)}
+.tag-alt{background:var(--bg3);border:1px solid var(--border);color:var(--text2)}
+
+/* TIPS */
+.tip-row{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)}
+.tip-row:last-child{border-bottom:none;padding-bottom:0}
+.tip-dot{width:6px;height:6px;border-radius:50%;background:var(--lime);flex-shrink:0;margin-top:5px}
+.tip-text{font-size:12px;color:var(--text2);line-height:1.55}
+.tip-text strong{color:var(--text)}
+
+/* HASHTAG CLOUD */
+.tag-cloud{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.htag{font-size:11px;padding:4px 10px;border-radius:6px;background:var(--bg3);border:1px solid var(--border);color:var(--text2)}
+.htag.hot{background:var(--lime-dim);border-color:var(--lime-border);color:var(--lime)}
+
+/* PILL */
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;border-radius:5px;padding:3px 9px;margin-right:6px;margin-bottom:6px}
+.pill-teal{background:var(--teal-dim);border:1px solid var(--teal-border);color:var(--teal)}
+.pill-amber{background:var(--amber-dim);border:1px solid var(--amber-border);color:var(--amber)}
+.pill-violet{background:var(--violet-dim);border:1px solid var(--violet-border);color:var(--violet)}
+.pill-red{background:var(--red-dim);border:1px solid var(--red-border);color:var(--red)}
+
+/* HOOK FRAME */
+.hook-frame{background:var(--bg3);border-radius:10px;padding:18px;margin-bottom:16px;border-left:3px solid var(--lime)}
+.hook-frame .hf-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--lime);margin-bottom:6px}
+.hook-frame .hf-text{font-family:var(--font-head);font-size:20px;font-weight:800;color:var(--text);line-height:1.2}
+.hook-frame .hf-note{font-size:11px;color:var(--text2);margin-top:6px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="eyebrow">Content Production</div>
+  <h1 class="title">Damarin<br><em>TikTok Skit</em></h1>
+  <div class="sub">POV / Trending Format — Viral Blueprint</div>
+  <div class="phase-tag">Production Guide</div>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <button class="nav-btn on" onclick="show('script')">Shot Script</button>
+    <button class="nav-btn" onclick="show('audio')">Audio</button>
+    <button class="nav-btn" onclick="show('caption')">Caption + Tags</button>
+    <button class="nav-btn" onclick="show('edit')">Edit Tips</button>
+  </nav>
+
+  <!-- ═══ SCRIPT ═══ -->
+  <div id="script" class="panel vis">
+    <div class="sec-label">Full Shot-by-Shot Script</div>
+
+    <!-- CONCEPT -->
+    <div class="card">
+      <div class="card-head">The Concept</div>
+      <div class="card-sub">Format: "POV you raised someone different" — cinematic cuts, text-driven storytelling</div>
+      <div>
+        <span class="pill pill-teal">9:16 vertical</span>
+        <span class="pill pill-amber">30–45 sec</span>
+        <span class="pill pill-violet">3–7 clips</span>
+      </div>
+      <div style="margin-top:14px;font-size:12px;color:var(--text2);line-height:1.6">
+        The hook stops the scroll. The middle builds curiosity and pride. The ending lands the emotional gut punch. Text does the talking — let the clips breathe.
+      </div>
+    </div>
+
+    <!-- HOOK -->
+    <div class="hook-frame">
+      <div class="hf-label">Hook — First 2 Seconds (make or break)</div>
+      <div class="hf-text">"POV: my son is built different 🔥"</div>
+      <div class="hf-note">This text appears instantly on screen, no delay. Use bold white text, black stroke. Font: Impact or heavy sans. Place in upper third.</div>
+    </div>
+
+    <!-- SHOTS -->
+    <div class="card">
+      <div class="card-head">Shot List</div>
+      <div class="card-sub">Arrange your best clips in this order. Pick the most energetic clip for Shot 3.</div>
+
+      <div class="shot">
+        <div class="shot-num">1</div>
+        <div class="shot-body">
+          <div class="shot-title">The Opener — Him being normal</div>
+          <div class="shot-time">0:00 – 0:04</div>
+          <div class="shot-desc">A casual clip of Damarin just doing something everyday — walking, sitting, messing around. Keep it mundane on purpose. This sets up the contrast.</div>
+          <div class="shot-overlay">"nobody asked to see this but watch"</div>
+        </div>
+      </div>
+
+      <div class="shot">
+        <div class="shot-num">2</div>
+        <div class="shot-body">
+          <div class="shot-title">The Shift — He locks in</div>
+          <div class="shot-time">0:04 – 0:10</div>
+          <div class="shot-desc">A clip of him switching gears — focusing on an activity, getting serious, doing something with real intent. Slow it down 50% in CapCut if needed.</div>
+          <div class="shot-overlay">"nah he actually went crazy fr"</div>
+        </div>
+      </div>
+
+      <div class="shot">
+        <div class="shot-num">3</div>
+        <div class="shot-body">
+          <div class="shot-title">THE MOMENT — Best clip you have</div>
+          <div class="shot-time">0:10 – 0:20</div>
+          <div class="shot-desc">Your single best Damarin clip goes here — the one that makes you proud, makes you laugh, or is genuinely impressive. This is the payoff. Slow-mo if it has action. Cut on the beat drop.</div>
+          <div class="shot-overlay">"bro said watch this 😭🔥"</div>
+        </div>
+      </div>
+
+      <div class="shot">
+        <div class="shot-num">4</div>
+        <div class="shot-body">
+          <div class="shot-title">The Reaction — His face / your face</div>
+          <div class="shot-time">0:20 – 0:28</div>
+          <div class="shot-desc">A clip of his expression after — smiling, hyped, unbothered, or goofy. Alternatively, a clip of your reaction watching him. This humanizes it and makes people comment.</div>
+          <div class="shot-overlay">"the confidence is crazy 😭"</div>
+        </div>
+      </div>
+
+      <div class="shot">
+        <div class="shot-num">5</div>
+        <div class="shot-body">
+          <div class="shot-title">The Closer — Final freeze / loop moment</div>
+          <div class="shot-time">0:28 – 0:40</div>
+          <div class="shot-desc">End on a clip that could loop — him looking at the camera, a proud pose, or a funny exit. The comment hook text lands here.</div>
+          <div class="shot-overlay">"like if you'd let him cook 🧑‍🍳"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMMENT BAIT -->
+    <div class="card">
+      <div class="card-head">Comment Bait (critical for algorithm)</div>
+      <div class="card-sub">Add this as the very last text overlay. It forces engagement.</div>
+      <div style="background:var(--bg3);border-radius:8px;padding:14px 16px;margin-top:4px">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:10px">Pick ONE of these for your ending overlay:</div>
+        <div style="font-size:14px;color:var(--amber);line-height:2">
+          "Drop a 🔥 if Damarin ate"<br>
+          "Comment 'different' if he really is 💯"<br>
+          "Tell him he's not built different in the comments 😂"<br>
+          "Like this so he sees it 🫶"
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ AUDIO ═══ -->
+  <div id="audio" class="panel">
+    <div class="sec-label">Sound Selection — Trending Sounds That Hit</div>
+
+    <div class="card">
+      <div class="card-head">Recommended Sounds</div>
+      <div class="card-sub">Search these in CapCut or TikTok's sound library. Go with whatever has 50K+ uses right now.</div>
+
+      <div class="audio-row">
+        <div class="audio-icon">🔥</div>
+        <div class="audio-info">
+          <div class="audio-name">"INDUSTRY BABY" — Lil Nas X</div>
+          <div class="audio-why">Best for the "built different" energy. Cut Shot 3 to the trumpet hit. Timeless on TikTok — works for any impressive kid clip.</div>
+          <div><span class="audio-tag tag-best">Best Pick</span></div>
+        </div>
+      </div>
+
+      <div class="audio-row">
+        <div class="audio-icon">⚡</div>
+        <div class="audio-info">
+          <div class="audio-name">"Superhero" — Metro Boomin / Future / Chris Brown</div>
+          <div class="audio-why">Cinematic, emotional build. Perfect if Shot 3 is something physically impressive. Drop in on the beat at 0:10.</div>
+          <div><span class="audio-tag tag-alt">Alt Option</span></div>
+        </div>
+      </div>
+
+      <div class="audio-row">
+        <div class="audio-icon">😂</div>
+        <div class="audio-info">
+          <div class="audio-name">Search "funny kid built different" in TikTok sounds</div>
+          <div class="audio-why">If you want a comedic angle — look for whatever trending sound is paired with "he's different" or "my son/kid" POV videos this week. Sort by Most Used.</div>
+          <div><span class="audio-tag tag-alt">Comedy Route</span></div>
+        </div>
+      </div>
+
+      <div class="audio-row">
+        <div class="audio-icon">🎯</div>
+        <div class="audio-info">
+          <div class="audio-name">Trending sound strategy</div>
+          <div class="audio-why">Open TikTok → search "built different kid" → tap the first viral video → tap the sound → use it. Riding a wave always beats picking from memory.</div>
+          <div><span class="audio-tag tag-best">Pro Move</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">Audio Settings in CapCut</div>
+      <div class="card-sub">Quick settings to make it sound pro</div>
+      <div class="tip-row"><div class="tip-dot"></div><div class="tip-text"><strong>Original audio:</strong> drop to 20–30% — keep ambient sound, it adds authenticity</div></div>
+      <div class="tip-row"><div class="tip-dot"></div><div class="tip-text"><strong>Music:</strong> 80–90%. Fade out last 1 second</div></div>
+      <div class="tip-row"><div class="tip-dot"></div><div class="tip-text"><strong>Beat sync:</strong> turn ON in CapCut — it auto-aligns cuts to the music</div></div>
+      <div class="tip-row"><div class="tip-dot"></div><div class="tip-text"><strong>Voiceover:</strong> optional — if you add one, say ONE sentence max: "Nah he's not normal bro"</div></div>
+    </div>
+  </div>
+
+  <!-- ═══ CAPTION ═══ -->
+  <div id="caption" class="panel">
+    <div class="sec-label">Caption + Hashtags</div>
+
+    <div class="sec-label" style="margin-top:0">Option A — Pride + Hype</div>
+    <div class="caption-box">
+      <div class="label">Caption Copy</div>
+      <div class="caption-text">nobody told him he was different. he just knew. 🤷🏾‍♂️🔥<br><br>Damarin really said watch this fr fr</div>
+    </div>
+
+    <div class="sec-label">Option B — Comedy</div>
+    <div class="caption-box">
+      <div class="label">Caption Copy</div>
+      <div class="caption-text">i did NOT raise him to be this confident 😭😭<br><br>he really looked at me like "you watching?" bro i'm always watching 🫶</div>
+    </div>
+
+    <div class="sec-label">Option C — Short & Punchy (highest reach)</div>
+    <div class="caption-box">
+      <div class="label">Caption Copy</div>
+      <div class="caption-text">built different. no cap. 🔥</div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">Hashtags</div>
+      <div class="card-sub">Use 4–6 max. Mix high-volume with niche. Never spam 30 tags.</div>
+      <div class="tag-cloud">
+        <span class="htag hot">#builtdifferent</span>
+        <span class="htag hot">#proudparent</span>
+        <span class="htag hot">#kidsoftiktok</span>
+        <span class="htag">#damarin</span>
+        <span class="htag">#mykid</span>
+        <span class="htag hot">#fyp</span>
+        <span class="htag">#foryoupage</span>
+        <span class="htag">#youngking</span>
+      </div>
+      <div style="margin-top:14px;font-size:11px;color:var(--text3)">Lime tags = highest reach. Use all lime tags + 1–2 grey ones.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">Post Timing</div>
+      <div class="card-sub">Maximizes initial velocity — the algorithm rewards early engagement</div>
+      <div class="tip-row"><div class="tip-dot"></div><div class="tip-text"><strong>Best windows:</strong> 6–9 AM, 12–2 PM, 7–10 PM (your local time)</div></div>
+      <div class="tip-row"><div class="tip-dot"></div><div class="tip-text"><strong>Best days:</strong> Tuesday, Thursday, Friday</div></div>
+      <div class="tip-row"><div class="tip-dot"></div><div class="tip-text"><strong>After posting:</strong> watch the first 30 min — comment back on every reply to boost engagement signals</div></div>
+    </div>
+  </div>
+
+  <!-- ═══ EDIT TIPS ═══ -->
+  <div id="edit" class="panel">
+    <div class="sec-label">CapCut Edit Workflow</div>
+
+    <div class="card">
+      <div class="card-head">Step-by-Step in CapCut</div>
+      <div class="card-sub">Do it in this order to avoid rework</div>
+      <div class="shot">
+        <div class="shot-num" style="color:var(--teal)">1</div>
+        <div class="shot-body">
+          <div class="shot-title">Import clips in order</div>
+          <div class="shot-desc">Add clips 1–5 in script order. Don't trim yet — just get them on the timeline.</div>
+        </div>
+      </div>
+      <div class="shot">
+        <div class="shot-num" style="color:var(--teal)">2</div>
+        <div class="shot-body">
+          <div class="shot-title">Add the sound first</div>
+          <div class="shot-desc">Drop your audio track before you start cutting. Everything cuts to the music — not the other way around.</div>
+        </div>
+      </div>
+      <div class="shot">
+        <div class="shot-num" style="color:var(--teal)">3</div>
+        <div class="shot-body">
+          <div class="shot-title">Trim to beat hits</div>
+          <div class="shot-desc">Use CapCut's waveform view. Cut on the kick drum or a beat hit. Shot 3 (the best clip) should START exactly on a big beat hit.</div>
+        </div>
+      </div>
+      <div class="shot">
+        <div class="shot-num" style="color:var(--teal)">4</div>
+        <div class="shot-body">
+          <div class="shot-title">Add text overlays</div>
+          <div class="shot-desc">Use each overlay from the Script tab. Font: <strong>Montserrat ExtraBold</strong> or <strong>Impact</strong>. Color: white with black stroke (3–4px). Animate: "Pop" or "Typewriter."</div>
+        </div>
+      </div>
+      <div class="shot">
+        <div class="shot-num" style="color:var(--teal)">5</div>
+        <div class="shot-body">
+          <div class="shot-title">Transitions</div>
+          <div class="shot-desc">Keep it simple: <strong>Flash</strong> or <strong>Zoom</strong> transition between Shot 2 → 3 for maximum impact. All others: straight cut (no transition).</div>
+        </div>
+      </div>
+      <div class="shot">
+        <div class="shot-num" style="color:var(--teal)">6</div>
+        <div class="shot-body">
+          <div class="shot-title">Color grade</div>
+          <div class="shot-desc">Apply CapCut filter: <strong>"Moody"</strong> or <strong>"Cinema"</strong> at 40–60% intensity. Boosts contrast and makes clips look more professional instantly.</div>
+        </div>
+      </div>
+      <div class="shot" style="border-bottom:none;padding-bottom:0">
+        <div class="shot-num" style="color:var(--teal)">7</div>
+        <div class="shot-body">
+          <div class="shot-title">Export &amp; post</div>
+          <div class="shot-desc">Export at 1080p. Post directly from CapCut to TikTok. Do NOT save → upload separately — that gets flagged as repost and suppressed.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">Viral Mechanics Checklist</div>
+      <div class="card-sub">Every box = more reach</div>
+      <div class="tip-row"><div class="tip-dot"></div><div class="tip-text"><strong>Hook in frame 1:</strong> text visible within 0.5 seconds of the video starting</div></div>
+      <div class="tip-row"><div class="tip-dot"></div><div class="tip-text"><strong>No dead air:</strong> every clip has either motion, text, or audio change — never flat</div></div>
+      <div class="tip-row"><div class="tip-dot"></div><div class="tip-text"><strong>Loop potential:</strong> ending clips back into beginning naturally — boosts watch-through rate</div></div>
+      <div class="tip-row"><div class="tip-dot"></div><div class="tip-text"><strong>Faces visible:</strong> TikTok's algorithm favors face-forward clips — make sure Damarin's face is clear in Shot 3</div></div>
+      <div class="tip-row"><div class="tip-dot"></div><div class="tip-text"><strong>Under 45 seconds:</strong> high rewatch rate at this length kills it in the algorithm</div></div>
+      <div class="tip-row"><div class="tip-dot"></div><div class="tip-text"><strong>Comment bait in last 3 seconds:</strong> the "drop a 🔥" text from the Script tab triggers engagement at peak watch-through</div></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('vis'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('on'));
+  document.getElementById(id).classList.add('vis');
+  event.currentTarget.classList.add('on');
+}
+</script>
+</body>
+</html>
