@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fillmore Bell — Health Monitor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:  #0c0c0e;
+  --bg1: #111114;
+  --bg2: #18181c;
+  --bg3: #222228;
+  --txt: #e8e8f0;
+  --dim: #777788;
+  --lime:   #c8f04a; --lime-dim:   #c8f04a1a; --lime-bd:   #c8f04a44;
+  --teal:   #4af0c8; --teal-dim:   #4af0c81a; --teal-bd:   #4af0c844;
+  --amber:  #f0b84a; --amber-dim:  #f0b84a1a; --amber-bd:  #f0b84a44;
+  --violet: #a07af0; --violet-dim: #a07af01a; --violet-bd: #a07af044;
+  --coral:  #f04a6a; --coral-dim:  #f04a6a1a; --coral-bd:  #f04a6a44;
+  --font-head: 'Syne', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --r: 10px; --r2: 6px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg); color: var(--txt); font-family: var(--font-mono); font-size: 14px; -webkit-font-smoothing: antialiased; }
+body { max-width: 780px; margin: 0 auto; padding: 0 16px 80px; }
+
+/* HEADER */
+.hdr { padding: 28px 0 20px; border-bottom: 1px solid var(--bg3); margin-bottom: 22px; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.hdr-left {}
+.hdr-name { font-family: var(--font-head); font-size: 24px; font-weight: 800; color: var(--teal); letter-spacing: -.02em; }
+.hdr-sub  { font-size: 12px; color: var(--dim); margin-top: 5px; letter-spacing: .04em; text-transform: uppercase; }
+.hdr-date { font-size: 11px; color: var(--dim); text-align: right; margin-top: 4px; }
+
+/* NAV */
+.nav { display: flex; gap: 8px; margin-bottom: 20px; }
+.nb {
+  flex: 1; padding: 10px 16px; background: var(--bg2); border: 1px solid var(--bg3);
+  border-radius: var(--r2); color: var(--dim); font-family: var(--font-mono);
+  font-size: 13px; cursor: pointer; transition: color .15s, background .15s, border-color .15s;
+  text-align: center; letter-spacing: .02em;
+}
+.nb:hover { color: var(--txt); }
+.nb.on.bp-tab { background: var(--teal-dim); color: var(--teal); border-color: var(--teal-bd); }
+.nb.on.wt-tab { background: var(--lime-dim); color: var(--lime); border-color: var(--lime-bd); }
+
+/* PANELS */
+.panel { display: none; }
+.panel.vis { display: block; animation: fadeUp .22s ease; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+
+/* STAT CARDS */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
+.stat { background: var(--bg2); border: 1px solid var(--bg3); border-radius: var(--r); padding: 14px 16px; }
+.stat-val { font-family: var(--font-head); font-size: 22px; font-weight: 700; line-height: 1; }
+.stat-lbl { font-size: 11px; color: var(--dim); margin-top: 6px; letter-spacing: .03em; }
+
+/* CHART */
+.chart-wrap { background: var(--bg2); border: 1px solid var(--bg3); border-radius: var(--r); padding: 16px; margin-bottom: 14px; }
+.chart-title { font-family: var(--font-head); font-size: 12px; font-weight: 700; color: var(--dim); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 12px; }
+canvas { width: 100% !important; display: block; }
+.legend { display: flex; gap: 18px; margin-top: 12px; flex-wrap: wrap; }
+.leg { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--dim); }
+.leg-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.leg-dash { width: 16px; height: 2px; border-radius: 1px; flex-shrink: 0; }
+
+/* ENTRY FORM */
+.entry-card { background: var(--bg2); border: 1px solid var(--bg3); border-radius: var(--r); padding: 16px; margin-bottom: 14px; }
+.entry-title { font-family: var(--font-head); font-size: 13px; font-weight: 700; margin-bottom: 12px; }
+.range-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+.range-pill { font-size: 10px; padding: 3px 9px; border-radius: 999px; letter-spacing: .02em; }
+.fields { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+.field { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 80px; }
+.field label { font-size: 10px; color: var(--dim); letter-spacing: .06em; text-transform: uppercase; }
+.field input, .field textarea {
+  background: var(--bg3); border: 1px solid #2e2e38;
+  border-radius: var(--r2); color: var(--txt); font-family: var(--font-mono);
+  font-size: 14px; padding: 8px 10px; outline: none; width: 100%;
+  transition: border-color .15s;
+}
+.field input:focus, .field textarea:focus { border-color: var(--teal-bd); }
+.field textarea { resize: none; height: 48px; font-size: 13px; }
+.btn {
+  padding: 9px 20px; border-radius: var(--r2); border: none; cursor: pointer;
+  font-family: var(--font-mono); font-size: 13px; font-weight: 500;
+  transition: background .15s, color .15s; white-space: nowrap;
+}
+.btn-teal  { background: var(--teal-dim);  color: var(--teal);  border: 1px solid var(--teal-bd); }
+.btn-teal:hover  { background: var(--teal);  color: #000; }
+.btn-lime  { background: var(--lime-dim);  color: var(--lime);  border: 1px solid var(--lime-bd); }
+.btn-lime:hover  { background: var(--lime);  color: #000; }
+
+/* HISTORY TABLE */
+.history-card { background: var(--bg2); border: 1px solid var(--bg3); border-radius: var(--r); padding: 16px; }
+.history-title { font-family: var(--font-head); font-size: 13px; font-weight: 700; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.history-count { font-family: var(--font-mono); font-size: 11px; color: var(--dim); font-weight: 400; }
+.tbl { width: 100%; border-collapse: collapse; }
+.tbl th { font-size: 10px; color: var(--dim); text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--bg3); letter-spacing: .05em; text-transform: uppercase; }
+.tbl td { font-size: 13px; padding: 9px 8px; border-bottom: 1px solid var(--bg3); vertical-align: middle; }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: #1c1c22; }
+.bp-pill {
+  display: inline-block; padding: 2px 9px; border-radius: 999px;
+  font-size: 10px; letter-spacing: .03em;
+}
+.bp-normal   { background: var(--teal-dim);   color: var(--teal);   border: 1px solid var(--teal-bd); }
+.bp-elevated { background: var(--amber-dim);  color: var(--amber);  border: 1px solid var(--amber-bd); }
+.bp-stage1   { background: #f07a6a1a;         color: #f07a6a;       border: 1px solid #f07a6a44; }
+.bp-stage2   { background: var(--coral-dim);  color: var(--coral);  border: 1px solid var(--coral-bd); }
+.bp-crisis   { background: var(--violet-dim); color: var(--violet); border: 1px solid var(--violet-bd); }
+.del-btn { background: none; border: none; color: var(--dim); cursor: pointer; font-size: 15px; padding: 2px 6px; border-radius: 4px; line-height: 1; }
+.del-btn:hover { color: var(--coral); background: var(--coral-dim); }
+.note-cell { color: var(--dim); font-size: 12px; font-style: italic; max-width: 140px; }
+.chg-up  { color: var(--coral); }
+.chg-dn  { color: var(--teal); }
+.chg-flat{ color: var(--dim); }
+.trend-up  { color: var(--coral); }
+.trend-dn  { color: var(--teal); }
+.trend-flat{ color: var(--dim); }
+.empty-row td { text-align: center; color: var(--dim); padding: 28px 8px; font-size: 13px; }
+
+@media (max-width: 500px) {
+  .stats { grid-template-columns: 1fr 1fr; }
+  .stat:last-child { grid-column: span 2; }
+  .fields { gap: 8px; }
+  .tbl .hide-sm { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-left">
+    <div class="hdr-name">Fillmore Bell</div>
+    <div class="hdr-sub">Health Monitor &nbsp;·&nbsp; Blood Pressure &amp; Weight</div>
+  </div>
+  <div class="hdr-date" id="hdr-date"></div>
+</div>
+
+<nav class="nav">
+  <button class="nb bp-tab on" onclick="show('bp')">&#9673;&nbsp; Blood Pressure</button>
+  <button class="nb wt-tab"    onclick="show('wt')">&#9651;&nbsp; Weight</button>
+</nav>
+
+<!-- ═══ BLOOD PRESSURE PANEL ═══ -->
+<div class="panel vis" id="bp">
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-val" id="bp-latest" style="color:var(--teal)">—</div>
+      <div class="stat-lbl">Latest reading</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="bp-avg">—</div>
+      <div class="stat-lbl">30-day avg</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="bp-trend-val">—</div>
+      <div class="stat-lbl">Systolic trend</div>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-title">Blood Pressure — Last 30 Days</div>
+    <canvas id="bp-chart" height="230"></canvas>
+    <div class="legend">
+      <div class="leg"><div class="leg-dot" style="background:var(--teal)"></div>Systolic</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--amber)"></div>Diastolic</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--lime);opacity:.7"></div>Pulse</div>
+    </div>
+  </div>
+
+  <div class="entry-card">
+    <div class="entry-title">Log a Reading</div>
+    <div class="range-row">
+      <span class="range-pill bp-normal">Normal &lt;120/80</span>
+      <span class="range-pill bp-elevated">Elevated 120–129</span>
+      <span class="range-pill bp-stage1">Stage 1 130–139 / 80–89</span>
+      <span class="range-pill bp-stage2">Stage 2 ≥140 / ≥90</span>
+      <span class="range-pill bp-crisis">Crisis ≥180 / ≥120</span>
+    </div>
+    <div class="fields">
+      <div class="field" style="max-width:160px">
+        <label>Date &amp; Time</label>
+        <input type="datetime-local" id="bp-dt">
+      </div>
+      <div class="field" style="max-width:88px">
+        <label>Systolic</label>
+        <input type="number" id="bp-sys" placeholder="120" min="60" max="260">
+      </div>
+      <div class="field" style="max-width:88px">
+        <label>Diastolic</label>
+        <input type="number" id="bp-dia" placeholder="80" min="30" max="160">
+      </div>
+      <div class="field" style="max-width:78px">
+        <label>Pulse</label>
+        <input type="number" id="bp-pulse" placeholder="72" min="30" max="220">
+      </div>
+      <div class="field">
+        <label>Note</label>
+        <textarea id="bp-note" placeholder="optional…"></textarea>
+      </div>
+      <div class="field" style="flex:0; align-self:flex-end">
+        <button class="btn btn-teal" onclick="addBP()">+ Log</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="history-card">
+    <div class="history-title">
+      History
+      <span class="history-count" id="bp-count"></span>
+    </div>
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Date &amp; Time</th>
+          <th>BP</th>
+          <th class="hide-sm">Pulse</th>
+          <th>Category</th>
+          <th class="hide-sm">Note</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="bp-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ WEIGHT PANEL ═══ -->
+<div class="panel" id="wt">
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-val" id="wt-latest" style="color:var(--lime)">—</div>
+      <div class="stat-lbl">Latest weight</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="wt-avg">—</div>
+      <div class="stat-lbl">30-day avg</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="wt-trend-val">—</div>
+      <div class="stat-lbl">Recent trend</div>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-title">Weight — Last 30 Days</div>
+    <canvas id="wt-chart" height="230"></canvas>
+    <div class="legend">
+      <div class="leg"><div class="leg-dot" style="background:var(--lime)"></div>Weight (lbs)</div>
+      <div class="leg"><div class="leg-dash" style="background:var(--lime);opacity:.4"></div>5-pt avg</div>
+    </div>
+  </div>
+
+  <div class="entry-card">
+    <div class="entry-title">Log Weight</div>
+    <div class="fields">
+      <div class="field" style="max-width:170px">
+        <label>Date &amp; Time</label>
+        <input type="datetime-local" id="wt-dt">
+      </div>
+      <div class="field" style="max-width:120px">
+        <label>Weight (lbs)</label>
+        <input type="number" id="wt-val" placeholder="185.0" min="50" max="600" step="0.1">
+      </div>
+      <div class="field">
+        <label>Note</label>
+        <textarea id="wt-note" placeholder="optional…"></textarea>
+      </div>
+      <div class="field" style="flex:0; align-self:flex-end">
+        <button class="btn btn-lime" onclick="addWT()">+ Log</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="history-card">
+    <div class="history-title">
+      History
+      <span class="history-count" id="wt-count"></span>
+    </div>
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Date &amp; Time</th>
+          <th>Weight</th>
+          <th>Change</th>
+          <th class="hide-sm">Note</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="wt-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+// ── storage keys ──
+const K_BP = 'fb_bp_v1';
+const K_WT = 'fb_wt_v1';
+const load = k => { try { return JSON.parse(localStorage.getItem(k) || '[]'); } catch { return []; } };
+const save = (k, d) => localStorage.setItem(k, JSON.stringify(d));
+
+// ── nav ──
+function show(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('vis'));
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
+  document.getElementById(id).classList.add('vis');
+  const btn = document.querySelector('.nb.' + id + '-tab');
+  if (btn) btn.classList.add('on');
+  if (id === 'bp') renderBP();
+  if (id === 'wt') renderWT();
+}
+
+// ── bp category ──
+function bpCat(sys, dia) {
+  if (sys >= 180 || dia >= 120) return { lbl: 'Crisis',   cls: 'bp-crisis'   };
+  if (sys >= 140 || dia >= 90)  return { lbl: 'Stage 2',  cls: 'bp-stage2'   };
+  if ((sys >= 130 && sys < 140) || (dia >= 80 && dia < 90))
+                                return { lbl: 'Stage 1',  cls: 'bp-stage1'   };
+  if (sys >= 120 && sys < 130 && dia < 80)
+                                return { lbl: 'Elevated',  cls: 'bp-elevated' };
+  return { lbl: 'Normal', cls: 'bp-normal' };
+}
+
+// ── date helpers ──
+function nowLocal() {
+  const d = new Date();
+  return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+}
+function fmtDT(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+       + ' ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+}
+function fmtDate(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+// ── add BP ──
+function addBP() {
+  const dt    = document.getElementById('bp-dt').value;
+  const sys   = parseInt(document.getElementById('bp-sys').value);
+  const dia   = parseInt(document.getElementById('bp-dia').value);
+  const pulse = parseInt(document.getElementById('bp-pulse').value) || null;
+  const note  = document.getElementById('bp-note').value.trim();
+  if (!dt || isNaN(sys) || isNaN(dia)) { alert('Date, systolic, and diastolic are required.'); return; }
+  const data = load(K_BP);
+  data.push({ id: Date.now(), dt, sys, dia, pulse, note });
+  data.sort((a, b) => new Date(b.dt) - new Date(a.dt));
+  save(K_BP, data);
+  ['bp-sys','bp-dia','bp-pulse','bp-note'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('bp-dt').value = nowLocal();
+  renderBP();
+}
+
+// ── add weight ──
+function addWT() {
+  const dt   = document.getElementById('wt-dt').value;
+  const val  = parseFloat(document.getElementById('wt-val').value);
+  const note = document.getElementById('wt-note').value.trim();
+  if (!dt || isNaN(val)) { alert('Date and weight are required.'); return; }
+  const data = load(K_WT);
+  data.push({ id: Date.now(), dt, val, note });
+  data.sort((a, b) => new Date(b.dt) - new Date(a.dt));
+  save(K_WT, data);
+  ['wt-val','wt-note'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('wt-dt').value = nowLocal();
+  renderWT();
+}
+
+// ── delete ──
+function delBP(id) { if (!confirm('Delete this reading?')) return; save(K_BP, load(K_BP).filter(r => r.id !== id)); renderBP(); }
+function delWT(id) { if (!confirm('Delete this entry?')) return;   save(K_WT, load(K_WT).filter(r => r.id !== id)); renderWT(); }
+
+// ── trend helper ──
+function trendStr(vals, isGoodDown) {
+  if (vals.length < 2) return { txt: '—', cls: 'trend-flat' };
+  const last = vals[0], prev = vals[Math.min(vals.length - 1, 4)];
+  const d = last - prev;
+  if (Math.abs(d) < 0.5) return { txt: '→ flat', cls: 'trend-flat' };
+  const up = d > 0;
+  return {
+    txt: (up ? '↑ +' : '↓ −') + Math.abs(d).toFixed(1),
+    cls: (up === isGoodDown) ? 'trend-up' : 'trend-dn'
+  };
+}
+
+// ── render BP ──
+function renderBP() {
+  const data = load(K_BP);
+  const now  = Date.now();
+  const recent = data.filter(r => (now - new Date(r.dt)) / 86400000 <= 30);
+
+  // stats
+  if (data[0]) {
+    const el = document.getElementById('bp-latest');
+    const cat = bpCat(data[0].sys, data[0].dia);
+    el.textContent = data[0].sys + '/' + data[0].dia;
+    el.style.color = cat.cls === 'bp-normal' ? 'var(--teal)'
+                   : cat.cls === 'bp-elevated' ? 'var(--amber)'
+                   : 'var(--coral)';
+  } else {
+    document.getElementById('bp-latest').textContent = '—';
+  }
+
+  if (recent.length) {
+    const aS = Math.round(recent.reduce((s, r) => s + r.sys, 0) / recent.length);
+    const aD = Math.round(recent.reduce((s, r) => s + r.dia, 0) / recent.length);
+    document.getElementById('bp-avg').textContent = aS + '/' + aD;
+  } else {
+    document.getElementById('bp-avg').textContent = '—';
+  }
+
+  const t = trendStr(data.map(r => r.sys), false);
+  const tv = document.getElementById('bp-trend-val');
+  tv.textContent = t.txt;
+  tv.className = 'stat-val ' + t.cls;
+
+  document.getElementById('bp-count').textContent = data.length + ' reading' + (data.length !== 1 ? 's' : '');
+
+  // table
+  const tbody = document.getElementById('bp-tbody');
+  if (!data.length) {
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="6">No readings yet — log your first one above.</td></tr>';
+  } else {
+    tbody.innerHTML = data.map(r => {
+      const cat = bpCat(r.sys, r.dia);
+      return `<tr>
+        <td>${fmtDT(r.dt)}</td>
+        <td style="font-family:var(--font-head);font-weight:700;font-size:15px">${r.sys}/${r.dia}</td>
+        <td class="hide-sm">${r.pulse ? r.pulse + ' bpm' : '<span style="color:var(--dim)">—</span>'}</td>
+        <td><span class="bp-pill ${cat.cls}">${cat.lbl}</span></td>
+        <td class="note-cell hide-sm">${r.note || ''}</td>
+        <td><button class="del-btn" onclick="delBP(${r.id})" title="Delete">×</button></td>
+      </tr>`;
+    }).join('');
+  }
+
+  drawBPChart(data);
+}
+
+// ── render weight ──
+function renderWT() {
+  const data = load(K_WT);
+  const now  = Date.now();
+  const recent = data.filter(r => (now - new Date(r.dt)) / 86400000 <= 30);
+
+  if (data[0]) {
+    document.getElementById('wt-latest').textContent = data[0].val.toFixed(1) + ' lbs';
+  } else {
+    document.getElementById('wt-latest').textContent = '—';
+  }
+
+  if (recent.length) {
+    const avg = recent.reduce((s, r) => s + r.val, 0) / recent.length;
+    document.getElementById('wt-avg').textContent = avg.toFixed(1) + ' lbs';
+  } else {
+    document.getElementById('wt-avg').textContent = '—';
+  }
+
+  const t = trendStr(data.map(r => r.val), false);
+  const tv = document.getElementById('wt-trend-val');
+  tv.textContent = t.txt;
+  tv.className = 'stat-val ' + t.cls;
+
+  document.getElementById('wt-count').textContent = data.length + ' entr' + (data.length !== 1 ? 'ies' : 'y');
+
+  // table
+  const tbody = document.getElementById('wt-tbody');
+  if (!data.length) {
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="5">No entries yet — log your first weight above.</td></tr>';
+  } else {
+    tbody.innerHTML = data.map((r, i) => {
+      const prev = data[i + 1];
+      let chg = '<span style="color:var(--dim)">—</span>';
+      if (prev) {
+        const d = r.val - prev.val;
+        const sign = d > 0 ? '+' : '−';
+        const cls  = Math.abs(d) < 0.2 ? 'chg-flat' : d > 0 ? 'chg-up' : 'chg-dn';
+        chg = `<span class="${cls}">${sign}${Math.abs(d).toFixed(1)} lbs</span>`;
+      }
+      return `<tr>
+        <td>${fmtDT(r.dt)}</td>
+        <td style="font-family:var(--font-head);font-weight:700;font-size:15px">${r.val.toFixed(1)} lbs</td>
+        <td>${chg}</td>
+        <td class="note-cell hide-sm">${r.note || ''}</td>
+        <td><button class="del-btn" onclick="delWT(${r.id})" title="Delete">×</button></td>
+      </tr>`;
+    }).join('');
+  }
+
+  drawWTChart(data);
+}
+
+// ── canvas helpers ──
+function getCanvas(id, declaredH) {
+  const canvas = document.getElementById(id);
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const w = canvas.parentElement.clientWidth - 32; // account for padding
+  const h = declaredH;
+  canvas.width  = w * dpr;
+  canvas.height = h * dpr;
+  canvas.style.width  = w + 'px';
+  canvas.style.height = h + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  return { ctx, w, h };
+}
+
+function drawAxes(ctx, w, h, pad, yMin, yMax, ySteps, color) {
+  const cW = w - pad.l - pad.r;
+  const cH = h - pad.t - pad.b;
+  ctx.strokeStyle = '#252530';
+  ctx.lineWidth = 1;
+  ctx.font = '10px DM Mono, monospace';
+  ctx.fillStyle = '#55556a';
+  ctx.textAlign = 'right';
+  for (let i = 0; i <= ySteps; i++) {
+    const y = pad.t + cH * i / ySteps;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(w - pad.r, y); ctx.stroke();
+    const val = yMax - (yMax - yMin) * i / ySteps;
+    ctx.fillText(Math.round(val), pad.l - 6, y + 4);
+  }
+}
+
+function cy(val, yMin, yMax, pad, h) {
+  const v = Math.max(yMin, Math.min(yMax, val));
+  return pad.t + (h - pad.t - pad.b) * (1 - (v - yMin) / (yMax - yMin));
+}
+function cx(i, n, pad, w) {
+  return n <= 1 ? pad.l + (w - pad.l - pad.r) / 2
+                : pad.l + (w - pad.l - pad.r) * i / (n - 1);
+}
+
+function polyline(ctx, pts, color, width, dashed) {
+  if (pts.length < 2) return;
+  ctx.save();
+  if (dashed) ctx.setLineDash([5, 5]);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = width;
+  ctx.lineJoin = 'round';
+  ctx.lineCap  = 'round';
+  ctx.beginPath();
+  pts.forEach(([x, y], i) => i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y));
+  ctx.stroke();
+  ctx.restore();
+}
+
+function dots(ctx, pts, color, r) {
+  pts.forEach(([x, y]) => {
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.strokeStyle = '#111114';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  });
+}
+
+// ── draw BP chart ──
+function drawBPChart(data) {
+  const { ctx, w, h } = getCanvas('bp-chart', 230);
+  const pad = { t: 14, b: 38, l: 46, r: 14 };
+
+  ctx.fillStyle = '#16161a';
+  ctx.fillRect(0, 0, w, h);
+
+  if (!data.length) {
+    ctx.fillStyle = '#44445a';
+    ctx.font = '13px DM Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('No data — log your first reading above', w / 2, h / 2);
+    return;
+  }
+
+  const cutoff = new Date(Date.now() - 30 * 86400000);
+  let pts = data.filter(r => new Date(r.dt) >= cutoff).reverse();
+  if (!pts.length) pts = [...data].reverse().slice(-20);
+
+  const allV = pts.flatMap(r => [r.sys, r.dia, r.pulse].filter(Boolean));
+  let yMin = Math.floor(Math.min(...allV) / 10) * 10 - 10;
+  let yMax = Math.ceil(Math.max(...allV)  / 10) * 10 + 10;
+  yMin = Math.max(40, yMin);
+  yMax = Math.max(yMin + 60, yMax);
+
+  // reference bands
+  const bands = [
+    { lo: Math.max(yMin, 120), hi: Math.min(yMax, 130), color: '#f0b84a' },
+    { lo: Math.max(yMin, 130), hi: Math.min(yMax, 140), color: '#f07a6a' },
+    { lo: Math.max(yMin, 140), hi: Math.min(yMax, 180), color: '#f04a6a' },
+    { lo: Math.max(yMin, 180), hi: Math.min(yMax, 260), color: '#a07af0' },
+  ];
+  bands.forEach(b => {
+    if (b.hi <= b.lo) return;
+    const y1 = cy(b.hi, yMin, yMax, pad, h);
+    const y2 = cy(b.lo, yMin, yMax, pad, h);
+    ctx.fillStyle = b.color + '0e';
+    ctx.fillRect(pad.l, y1, w - pad.l - pad.r, y2 - y1);
+  });
+
+  drawAxes(ctx, w, h, pad, yMin, yMax, 6, '#252530');
+
+  // x labels
+  ctx.fillStyle = '#55556a';
+  ctx.font = '10px DM Mono, monospace';
+  ctx.textAlign = 'center';
+  const step = Math.max(1, Math.ceil(pts.length / 7));
+  pts.forEach((r, i) => {
+    if (i % step === 0 || i === pts.length - 1) {
+      ctx.fillText(fmtDate(r.dt), cx(i, pts.length, pad, w), h - pad.b + 16);
+    }
+  });
+
+  const sPts = pts.map((r, i) => [cx(i, pts.length, pad, w), cy(r.sys,   yMin, yMax, pad, h)]);
+  const dPts = pts.map((r, i) => [cx(i, pts.length, pad, w), cy(r.dia,   yMin, yMax, pad, h)]);
+  const pPts = pts.filter(r => r.pulse).map(r => {
+    const i = pts.indexOf(r);
+    return [cx(i, pts.length, pad, w), cy(r.pulse, yMin, yMax, pad, h)];
+  });
+
+  // shaded band between systolic and diastolic
+  if (sPts.length >= 2) {
+    ctx.beginPath();
+    sPts.forEach(([x, y], i) => i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y));
+    [...dPts].reverse().forEach(([x, y]) => ctx.lineTo(x, y));
+    ctx.closePath();
+    ctx.fillStyle = '#4af0c80d';
+    ctx.fill();
+  }
+
+  if (pPts.length > 1) polyline(ctx, pPts, '#c8f04a77', 1.5, false);
+  polyline(ctx, sPts, '#4af0c8', 2.5);
+  polyline(ctx, dPts, '#f0b84a', 2.5);
+  if (pPts.length) dots(ctx, pPts, '#c8f04a', 2.5);
+  dots(ctx, sPts, '#4af0c8', 3.5);
+  dots(ctx, dPts, '#f0b84a', 3.5);
+}
+
+// ── draw weight chart ──
+function drawWTChart(data) {
+  const { ctx, w, h } = getCanvas('wt-chart', 230);
+  const pad = { t: 14, b: 38, l: 54, r: 14 };
+
+  ctx.fillStyle = '#16161a';
+  ctx.fillRect(0, 0, w, h);
+
+  if (!data.length) {
+    ctx.fillStyle = '#44445a';
+    ctx.font = '13px DM Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('No data — log your first weight above', w / 2, h / 2);
+    return;
+  }
+
+  const cutoff = new Date(Date.now() - 30 * 86400000);
+  let pts = data.filter(r => new Date(r.dt) >= cutoff).reverse();
+  if (!pts.length) pts = [...data].reverse().slice(-20);
+
+  const vals = pts.map(r => r.val);
+  let yMin = Math.floor(Math.min(...vals)) - 4;
+  let yMax = Math.ceil(Math.max(...vals))  + 4;
+  if (yMax - yMin < 8) { const mid = (yMax + yMin) / 2; yMin = mid - 4; yMax = mid + 4; }
+
+  drawAxes(ctx, w, h, pad, yMin, yMax, 5, '#252530');
+
+  // x labels
+  ctx.fillStyle = '#55556a';
+  ctx.font = '10px DM Mono, monospace';
+  ctx.textAlign = 'center';
+  const step = Math.max(1, Math.ceil(pts.length / 7));
+  pts.forEach((r, i) => {
+    if (i % step === 0 || i === pts.length - 1) {
+      ctx.fillText(fmtDate(r.dt), cx(i, pts.length, pad, w), h - pad.b + 16);
+    }
+  });
+
+  const coords = pts.map((r, i) => [cx(i, pts.length, pad, w), cy(r.val, yMin, yMax, pad, h)]);
+
+  // gradient fill
+  if (coords.length >= 1) {
+    const grad = ctx.createLinearGradient(0, pad.t, 0, h - pad.b);
+    grad.addColorStop(0, '#c8f04a28');
+    grad.addColorStop(1, '#c8f04a02');
+    ctx.beginPath();
+    coords.forEach(([x, y], i) => i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y));
+    ctx.lineTo(coords[coords.length - 1][0], h - pad.b);
+    ctx.lineTo(coords[0][0], h - pad.b);
+    ctx.closePath();
+    ctx.fillStyle = grad;
+    ctx.fill();
+  }
+
+  // 5-pt moving average
+  if (pts.length >= 5) {
+    const ma = [];
+    for (let i = 2; i <= pts.length - 3; i++) {
+      const avg = (pts[i-2].val + pts[i-1].val + pts[i].val + pts[i+1].val + pts[i+2].val) / 5;
+      ma.push([cx(i, pts.length, pad, w), cy(avg, yMin, yMax, pad, h)]);
+    }
+    polyline(ctx, ma, '#c8f04a55', 2, true);
+  }
+
+  polyline(ctx, coords, '#c8f04a', 2.5);
+  dots(ctx, coords, '#c8f04a', 3.5);
+}
+
+// ── init ──
+function init() {
+  document.getElementById('hdr-date').textContent =
+    new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+  document.getElementById('bp-dt').value = nowLocal();
+  document.getElementById('wt-dt').value = nowLocal();
+  renderBP();
+}
+
+window.addEventListener('resize', () => {
+  if (document.getElementById('bp').classList.contains('vis')) drawBPChart(load(K_BP));
+  if (document.getElementById('wt').classList.contains('vis')) drawWTChart(load(K_WT));
+});
+
+init();
+</script>
+</body>
+</html>
